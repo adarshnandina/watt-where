@@ -22,3 +22,11 @@ dev = [
     "pytest-django>=4.14.0",
     "ruff>=0.17.6",
 ]
+
+[tool.ruff]
+line-length = 120
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B905", "E501"]  # zip(strict=) is applied where it matters

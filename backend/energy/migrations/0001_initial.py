@@ -5,54 +5,62 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='DataMeta',
+            name="DataMeta",
             fields=[
-                ('key', models.CharField(max_length=50, primary_key=True, serialize=False)),
-                ('value', models.CharField(max_length=200)),
+                ("key", models.CharField(max_length=50, primary_key=True, serialize=False)),
+                ("value", models.CharField(max_length=200)),
             ],
         ),
         migrations.CreateModel(
-            name='Municipality',
+            name="Municipality",
             fields=[
-                ('ags', models.CharField(max_length=8, primary_key=True, serialize=False)),
-                ('name', models.CharField(db_index=True, max_length=200)),
-                ('name_normalized', models.CharField(db_index=True, max_length=200)),
-                ('district_ags', models.CharField(db_index=True, max_length=5)),
-                ('district_name', models.CharField(max_length=200)),
-                ('population', models.IntegerField(null=True)),
-                ('area_km2', models.FloatField(null=True)),
-                ('centroid_lat', models.FloatField()),
-                ('centroid_lon', models.FloatField()),
+                ("ags", models.CharField(max_length=8, primary_key=True, serialize=False)),
+                ("name", models.CharField(db_index=True, max_length=200)),
+                ("name_normalized", models.CharField(db_index=True, max_length=200)),
+                ("district_ags", models.CharField(db_index=True, max_length=5)),
+                ("district_name", models.CharField(max_length=200)),
+                ("population", models.IntegerField(null=True)),
+                ("area_km2", models.FloatField(null=True)),
+                ("centroid_lat", models.FloatField()),
+                ("centroid_lon", models.FloatField()),
             ],
         ),
         migrations.CreateModel(
-            name='EnergyUnit',
+            name="EnergyUnit",
             fields=[
-                ('mastr_id', models.CharField(max_length=32, primary_key=True, serialize=False)),
-                ('technology', models.CharField(db_index=True, max_length=20)),
-                ('status_raw', models.CharField(max_length=100)),
-                ('status', models.CharField(db_index=True, max_length=20)),
-                ('net_capacity_kw', models.FloatField(null=True)),
-                ('gross_capacity_kw', models.FloatField(null=True)),
-                ('storage_capacity_kwh', models.FloatField(null=True)),
-                ('commissioning_date', models.DateField(db_index=True, null=True)),
-                ('decommissioning_date', models.DateField(null=True)),
-                ('postcode', models.CharField(max_length=5, null=True)),
-                ('lat', models.FloatField(null=True)),
-                ('lon', models.FloatField(null=True)),
-                ('solar_location_type', models.CharField(max_length=100, null=True)),
-                ('municipality', models.ForeignKey(db_constraint=False, null=True, on_delete=django.db.models.deletion.SET_NULL, to='energy.municipality')),
+                ("mastr_id", models.CharField(max_length=32, primary_key=True, serialize=False)),
+                ("technology", models.CharField(db_index=True, max_length=20)),
+                ("status_raw", models.CharField(max_length=100)),
+                ("status", models.CharField(db_index=True, max_length=20)),
+                ("net_capacity_kw", models.FloatField(null=True)),
+                ("gross_capacity_kw", models.FloatField(null=True)),
+                ("storage_capacity_kwh", models.FloatField(null=True)),
+                ("commissioning_date", models.DateField(db_index=True, null=True)),
+                ("decommissioning_date", models.DateField(null=True)),
+                ("postcode", models.CharField(max_length=5, null=True)),
+                ("lat", models.FloatField(null=True)),
+                ("lon", models.FloatField(null=True)),
+                ("solar_location_type", models.CharField(max_length=100, null=True)),
+                (
+                    "municipality",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="energy.municipality",
+                    ),
+                ),
             ],
             options={
-                'indexes': [models.Index(fields=['municipality', 'technology', 'status'], name='energy_ener_municip_538222_idx')],
+                "indexes": [
+                    models.Index(fields=["municipality", "technology", "status"], name="energy_ener_municip_538222_idx")
+                ],
             },
         ),
     ]

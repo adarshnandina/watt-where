@@ -28,9 +28,7 @@ class EnergyUnit(models.Model):
     storage_capacity_kwh = models.FloatField(null=True)
     commissioning_date = models.DateField(null=True, db_index=True)
     decommissioning_date = models.DateField(null=True)
-    municipality = models.ForeignKey(
-        Municipality, null=True, on_delete=models.SET_NULL, db_constraint=False
-    )
+    municipality = models.ForeignKey(Municipality, null=True, on_delete=models.SET_NULL, db_constraint=False)
     postcode = models.CharField(max_length=5, null=True)
     lat = models.FloatField(null=True)
     lon = models.FloatField(null=True)

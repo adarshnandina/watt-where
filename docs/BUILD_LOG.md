@@ -37,3 +37,31 @@ Plain-language notes on what was built and why, one entry per phase.
 **Deviations:** VG250 2025 has no `geo84` variant; used the UTM32 GeoPackage and reprojected. The MaStR download (~9 GB on disk, ~30 min) was approved by the user first.
 
 **Note:** the real data replaced the sample rows in the dev DB. Tests will use their own test database seeded with `seed_sample`.
+
+## Phase 3: Tool layer
+**Built:** `energy/tools/` with six tools (`find_municipality`, `capacity_summary`, `rank_municipalities`, `units_near`, `capacity_timeseries`, `run_readonly_sql`), a registry (`REGISTRY`, `anthropic_tool_definitions()`, `call_tool()`), and `sql_guard.py`. 83 tests pass offline (`uv run pytest`), `ruff` is clean. `backend/scripts/sample_outputs.py` prints every tool's output on the real data.
+
+**Key design decisions (interview material):**
+- **`llm_content` vs `display`:** every tool returns a `ToolResult` with three parts. The model only gets the small `llm_content` (totals, top-N). Heavy payloads (a 2 MB choropleth for all 1,103 municipalities, point layers, tables) go to `display` and straight to the browser. That saves tokens and latency and stops the model from re-typing numbers from a giant table.
+- **Errors are data:** bad input (unknown area, bad technology, wrong date) comes back as `{"error": ..., "allowed": [...]}` so the model can fix its next call. `call_tool` validates arguments against the JSON schema first and never raises.
+- **One registry, two front doors:** the same `REGISTRY` will feed the agent loop and the MCP server.
+- **SQL guard in seven layers:** sqlglot parse (exactly one SELECT), AST walk rejecting DML/DDL/INTO/locks/commands anywhere (incl. inside CTEs), table allow-list, *function allow-list* (not deny-list), execution of the SQL *regenerated from the AST* so comments can't smuggle anything, `LIMIT 500` wrapper, and execution as the `wattwhere_ro` role in a READ ONLY transaction with a 5 s timeout. Geometry columns are stripped by type OID. Tests cover 33 rejected and 11 allowed queries, the timeout, and DB-level write refusal (two separate layers).
+- Cumulative time series is computed as two small aggregates (added per year, removed per year) plus a running sum in Python, instead of a years × units cross join, which would be slow on 1.5 M rows.
+- The coordinate caveat is built into `units_near`: the result carries the number of matching units in the nearby municipalities that have no coordinates.
+
+**Real-data sanity check (Freiburg im Breisgau, 08311000, units in operation, net):**
+| Check | Result |
+|---|---|
+| All technologies | 14,019 units, 155.6 MW (0.65 kW/inhabitant) |
+| Solar | 9,854 units, 103.8 MW |
+| Storage | 4,138 units, 25.5 MW, 40.6 MWh usable |
+| Wind | 4 units, 18.3 MW |
+| Wind within 25 km of Freiburg | 23 turbines, 57.6 MW |
+| Breisgau-Hochschwarzwald district | 42,648 units, 500.6 MW |
+| BW wind total | 950 units, 2,337 MW (plausible for 2026) |
+| Top solar kW/capita (pop ≥ 1,000) | Langenenslingen 25.4, Külsheim 25.0 (large ground-mounted parks) |
+
+**Notes / deviations:**
+- The sandbox test DB needs the sample data *committed* (a `conftest.py` session fixture) because the SQL tool uses a second connection as the read-only role, and that connection can't see uncommitted rows.
+- sqlglot names some functions differently from Postgres (`ST_MakePoint` is `ST_POINT`); the allow-list uses sqlglot's names. A test caught this.
+- The region-wide choropleth is ~2 MB of GeoJSON (4 decimal places). Fine for a one-off SSE event; could be trimmed later if needed.

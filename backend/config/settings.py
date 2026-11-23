@@ -51,9 +51,7 @@ MIDDLEWARE = ["django.middleware.common.CommonMiddleware"]
 ROOT_URLCONF = "config.urls"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL", "postgres://wattwhere:wattwhere@localhost:5433/wattwhere"
-)
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgres://wattwhere:wattwhere@localhost:5433/wattwhere")
 READONLY_DATABASE_URL = os.environ.get(
     "READONLY_DATABASE_URL", "postgres://wattwhere_ro:wattwhere_ro@localhost:5433/wattwhere"
 )
