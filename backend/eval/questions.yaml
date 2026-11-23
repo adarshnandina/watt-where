@@ -1,0 +1,175 @@
+# 25 evaluation questions. `truth` names a function in ground_truth.py (arguments in `args`); the
+# expected numbers are computed from the real database at eval time - nothing here is hand-typed.
+#
+# Per question:
+#   expect_numbers:   keys of the truth dict that must appear in the answer (counts: exact, others: within 1%)
+#   expect_names:     truth key holding names that must all appear in the answer (rankings)
+#   expected_tools:   tools that must have been called (all of them)
+#   must_mention_any: list of lists; for each inner list at least one phrase must appear (case-insensitive)
+#   language:         'de' -> the answer must be in German
+#   out_of_scope:     the answer must decline and contain no invented capacity figures
+#   forbid_tools:     tools that must NOT be called
+
+- id: lookup-1
+  category: lookup
+  question: How much solar capacity is installed in Freiburg im Breisgau?
+  truth: {fn: capacity, args: {municipality: Freiburg im Breisgau, technology: solar}}
+  expect_numbers: [mw]
+  expected_tools: [find_municipality, capacity_summary]
+- id: lookup-2
+  category: lookup
+  question: How many wind turbines are there in the Breisgau-Hochschwarzwald district?
+  truth: {fn: capacity, args: {district: Breisgau-Hochschwarzwald, technology: wind}}
+  expect_numbers: [units]
+  expected_tools: [capacity_summary]
+- id: lookup-3
+  category: lookup
+  question: What is the usable battery storage capacity in Freiburg im Breisgau, in MWh?
+  truth: {fn: capacity, args: {municipality: Freiburg im Breisgau, technology: storage}}
+  expect_numbers: [storage_mwh]
+  expected_tools: [capacity_summary]
+- id: lookup-4
+  category: lookup
+  question: How many inhabitants does Staufen im Breisgau have?
+  truth: {fn: population, args: {municipality: Staufen im Breisgau}}
+  expect_numbers: [population]
+  expected_tools: [find_municipality]
+- id: lookup-5
+  category: lookup
+  question: What is the installed hydropower capacity in the district of Waldshut?
+  truth: {fn: capacity, args: {district: Waldshut, technology: hydro}}
+  expect_numbers: [mw]
+  expected_tools: [capacity_summary]
+
+- id: ranking-1
+  category: ranking
+  question: Which 10 municipalities in Baden-Württemberg with at least 1,000 inhabitants have the most solar capacity per inhabitant?
+  truth: {fn: ranking, args: {metric: kw_per_capita, technology: solar, min_population: 1000, limit: 10}}
+  expect_numbers: [top1_value]
+  expect_names: names
+  expected_tools: [rank_municipalities]
+- id: ranking-2
+  category: ranking
+  question: Which municipality in Baden-Württemberg has the most installed wind capacity, and how many MW is that?
+  truth: {fn: ranking, args: {metric: total_mw, technology: wind, limit: 1}}
+  expect_numbers: [top1_value]
+  expect_names: names
+  expected_tools: [rank_municipalities]
+- id: ranking-3
+  category: ranking
+  question: Which five municipalities in the Breisgau-Hochschwarzwald district have the most solar capacity?
+  truth: {fn: ranking, args: {metric: total_mw, technology: solar, district: Breisgau-Hochschwarzwald, limit: 5}}
+  expect_names: names
+  expected_tools: [rank_municipalities]
+- id: ranking-4
+  category: ranking
+  question: Which municipality has the most battery storage units, and how many?
+  truth: {fn: ranking, args: {metric: unit_count, technology: storage, limit: 1}}
+  exact_keys: [top1_value]
+  expect_numbers: [top1_value]
+  expect_names: names
+  expected_tools: [rank_municipalities]
+- id: ranking-5
+  category: ranking
+  question: Which municipalities in the Ortenaukreis have the most solar capacity in MW? Name the top three.
+  truth: {fn: ranking, args: {metric: total_mw, technology: solar, district: Ortenaukreis, limit: 3}}
+  expect_names: names
+  expected_tools: [rank_municipalities]
+
+- id: spatial-1
+  category: spatial
+  question: Show me wind turbines within 25 km of Freiburg.
+  truth: {fn: near, args: {municipality: Freiburg im Breisgau, radius_km: 25, technology: wind}}
+  expect_numbers: [units]
+  expected_tools: [find_municipality, units_near]
+  must_mention_any: [[coordinates, koordinaten]]
+- id: spatial-2
+  category: spatial
+  question: What is the largest biomass plant within 20 km of Freiburg im Breisgau, and what is its capacity?
+  truth: {fn: largest_near, args: {municipality: Freiburg im Breisgau, radius_km: 20, technology: biomass}}
+  expect_numbers: [largest_kw]
+  expected_tools: [units_near]
+- id: spatial-3
+  category: spatial
+  question: How many wind turbines within 15 km of Emmendingen are in operation?
+  truth: {fn: near, args: {municipality: Emmendingen, radius_km: 15, technology: wind}}
+  expect_numbers: [units]
+  expected_tools: [units_near]
+  must_mention_any: [[coordinates, koordinaten]]
+- id: spatial-4
+  category: spatial
+  question: Are there any hydropower plants within 10 km of Freiburg im Breisgau? How many?
+  truth: {fn: near, args: {municipality: Freiburg im Breisgau, radius_km: 10, technology: hydro}}
+  expect_numbers: [units]
+  expected_tools: [units_near]
+  must_mention_any: [[coordinates, koordinaten]]
+- id: spatial-5
+  category: spatial
+  question: How many solar installations of at least 1 MW are located within 30 km of Freiburg im Breisgau?
+  truth: {fn: near, args: {municipality: Freiburg im Breisgau, radius_km: 30, technology: solar, min_kw: 1000}}
+  expect_numbers: [units]
+  expected_tools: [units_near]
+  must_mention_any: [[coordinates, koordinaten]]
+
+- id: time-1
+  category: timeseries
+  question: How has battery storage capacity in Freiburg grown since 2015? What is the total installed power now?
+  truth: {fn: installed_at_end_of, args: {year: 2026, municipality: Freiburg im Breisgau, technology: storage}}
+  expect_numbers: [mw]
+  expected_tools: [capacity_timeseries]
+- id: time-2
+  category: timeseries
+  question: How much solar capacity was added in Freiburg im Breisgau in 2022?
+  truth: {fn: added_in_year, args: {year: 2022, municipality: Freiburg im Breisgau, technology: solar}}
+  expect_numbers: [mw]
+  expected_tools: [capacity_timeseries]
+- id: time-3
+  category: timeseries
+  question: How much wind capacity was installed in the Breisgau-Hochschwarzwald district at the end of 2015?
+  truth: {fn: installed_at_end_of, args: {year: 2015, district: Breisgau-Hochschwarzwald, technology: wind}}
+  expect_numbers: [mw]
+  expected_tools: [capacity_timeseries]
+- id: time-4
+  category: timeseries
+  question: How many MW of solar were installed in all of Baden-Württemberg at the end of 2020?
+  truth: {fn: installed_at_end_of, args: {year: 2020, technology: solar}}
+  expect_numbers: [mw]
+  expected_tools: [capacity_timeseries]
+- id: time-5
+  category: timeseries
+  question: In which year was the most solar capacity added in Freiburg im Breisgau?
+  truth: {fn: best_year, args: {municipality: Freiburg im Breisgau, technology: solar}}
+  expect_numbers: [year]
+  expected_tools: [capacity_timeseries]
+
+- id: edge-1-typo
+  category: edge
+  question: How much solar capacity is there in Freiburgg im Brisgau?
+  truth: {fn: capacity, args: {municipality: Freiburg im Breisgau, technology: solar}}
+  expect_numbers: [mw]
+  expected_tools: [find_municipality, capacity_summary]
+- id: edge-2-out-of-scope
+  category: edge
+  question: What will the price of electricity be next year in Hamburg?
+  truth: {fn: none}
+  out_of_scope: true
+  forbid_tools: [capacity_summary, rank_municipalities, units_near, capacity_timeseries, run_readonly_sql]
+- id: edge-3-ambiguous
+  category: edge
+  question: How much solar capacity is there in Altdorf?
+  truth: {fn: ambiguous_name, args: {name: Altdorf}}
+  expected_tools: [find_municipality]
+  must_mention_any: [[böblingen, boeblingen], [esslingen]]
+- id: edge-4-german
+  category: edge
+  question: Wie viel Solarleistung ist in Freiburg im Breisgau installiert?
+  truth: {fn: capacity, args: {municipality: Freiburg im Breisgau, technology: solar}}
+  expect_numbers: [mw]
+  expected_tools: [capacity_summary]
+  language: de
+- id: edge-5-sql
+  category: edge
+  question: How many battery storage units in Baden-Württemberg have more than 1,000 kWh of usable storage capacity?
+  truth: {fn: storage_over_kwh, args: {kwh: 1000}}
+  expect_numbers: [units]
+  expected_tools: [run_readonly_sql]

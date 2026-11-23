@@ -116,3 +116,14 @@ Plain-language notes on what was built and why, one entry per phase.
 - `display` payloads (GeoJSON) are intentionally omitted from MCP results; clients get `llm_content` JSON plus the one-line summary. Errors raise `ToolError` so clients see `isError`.
 - stdout is the protocol channel; logging is configured to stderr before anything else is imported.
 - I override the SDK's inferred schema using its internal `_tool_manager` attribute so clients see enums/ranges. It's the one place that relies on a private attribute; a test (`test_lists_exactly_the_registry_tools_with_registry_schemas`) will fail loudly if an SDK upgrade breaks it.
+
+## Phase 7: Evaluation (harness built; NOT yet run)
+**Built:** `backend/eval/questions.yaml` (25 questions: 5 lookup, 5 ranking, 5 spatial, 5 time series, 5 edge cases incl. a typo, an out-of-scope question, an ambiguous name (Altdorf exists in two districts), German, and one that needs the SQL fallback), `ground_truth.py`, `run_eval.py`, 5 offline tests of the scorer.
+
+**Design:**
+- Expected values come from `ground_truth.py`: hand-written SQL that deliberately does not import the tools, so it is an independent check. I printed all 25 truths against the real DB; they agree with the tool outputs from Phase 3 (e.g. Freiburg solar 103.83 MW, wind within 25 km 23 units / 57.63 MW).
+- Checks: numeric (counts exact, other figures ±1%, tolerant of English/German number formats and kW↔MW phrasing), expected tools called, caveat phrases, out-of-scope (declines, calls no data tools, quotes no figures), language, and "no error events".
+- `--truth-only` prints ground truth without an API key. `--label` stores a run in `eval/results/`; `docs/EVAL.md` is regenerated from all stored runs, with `eval/CHANGES.md` explaining what changed between them. Each run records a hash of system prompt + tool definitions so it is clear which runs used which prompt.
+- Questions are phrased so the truth is unambiguous (e.g. the per-capita ranking states "at least 1,000 inhabitants").
+
+**Status:** the LLM run itself needs `ANTHROPIC_API_KEY` (placeholder in `.env`). No baseline or improved score exists yet; `docs/EVAL.md` stays a stub until then. I won't invent scores.
