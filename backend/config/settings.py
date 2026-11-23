@@ -74,3 +74,12 @@ ANTHROPIC_MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-5-5")
 CHAT_MAX_BODY_BYTES = 64 * 1024
 CHAT_MAX_HISTORY = 20
 DATA_UPLOAD_MAX_MEMORY_SIZE = CHAT_MAX_BODY_BYTES
+
+# Structured (JSON) request logs go to stdout; the agent writes one JSON object per line.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {"plain": {"format": "%(message)s"}},
+    "handlers": {"stdout": {"class": "logging.StreamHandler", "stream": "ext://sys.stdout", "formatter": "plain"}},
+    "loggers": {"wattwhere": {"handlers": ["stdout"], "level": "INFO", "propagate": False}},
+}

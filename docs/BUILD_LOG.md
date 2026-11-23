@@ -65,3 +65,21 @@ Plain-language notes on what was built and why, one entry per phase.
 - The sandbox test DB needs the sample data *committed* (a `conftest.py` session fixture) because the SQL tool uses a second connection as the read-only role, and that connection can't see uncommitted rows.
 - sqlglot names some functions differently from Postgres (`ST_MakePoint` is `ST_POINT`); the allow-list uses sqlglot's names. A test caught this.
 - The region-wide choropleth is ~2 MB of GeoJSON (4 decimal places). Fine for a one-off SSE event; could be trimmed later if needed.
+
+## Phase 4: Agent and streaming endpoint
+**Built:** `agent/events.py` (event protocol + SSE encoding + heartbeat), `agent/prompts.py`, `agent/loop.py`, `agent/views.py` (`POST /api/chat`, `GET /api/examples`, `GET /api/municipalities/search`). 27 new tests with a scripted fake Anthropic client (110 total, all offline).
+
+**Design decisions:**
+- **Agent loop = async generator of events.** `run_agent()` yields `(type, data)` tuples and knows nothing about HTTP. The view wraps it in `with_heartbeat()` which encodes SSE frames. That separation made it testable without a network.
+- **The loop is the whole "agent":** stream a model turn → if it asked for tools, run them (concurrently with `asyncio.gather`, in worker threads because the DB layer is sync) → append `tool_result` blocks → stream the next turn. Capped at 8 tool rounds; on the cap it ends with a polite message and `stop_reason: max_tool_rounds`.
+- **Context discipline:** the model receives `llm_content` JSON only. The test `test_tool_round_event_order_and_what_the_model_sees` asserts display payloads never reach the second API call.
+- **Prompt caching:** `cache_control` on the system block and on the last tool definition (the API caches everything up to that marker). Cache-read tokens are summed into `usage` and logged.
+- **Heartbeat via producer task + queue:** a slow tool can't block the `: ping` comment. When the client disconnects, the wrapper's `finally` cancels the agent task, which closes the LLM stream and prevents further rounds. Tested.
+- **Retry policy:** one retry with backoff for rate limits / overload / connection errors, but only if no text had been streamed yet in that round (otherwise the user would see duplicated text). Then an `error` event with a generic message; auth errors are non-retryable and never leak details or keys.
+- **Stateless backend:** the client sends visible text history only (last 20 messages, each capped at 4,000 chars, body max 64 KB). Earlier tool calls aren't replayed to the model. **Deliberate simplification:** follow-ups work from the text of previous answers, which is cheaper and simpler; the cost is that the model can't re-read old tool outputs.
+- Errors also end with `message_end` (`stop_reason: "error"`), so the client always gets a terminator.
+- Structured JSON log line per request (question, tools+durations, tokens, stop reason) to stdout; the key is never logged.
+
+**Deviation / gotchas:**
+- The installed `anthropic` SDK (2.12) uses `httpx2`, so test fakes build errors with `httpx2`. I verified `messages.stream(...)`, `text_stream` and `get_final_message()` exist in the installed version rather than trusting memory.
+- **Not yet verified live:** `.env` still holds the placeholder `ANTHROPIC_API_KEY`, so the curl acceptance check against the real model could not run. Verified instead: real uvicorn serves proper SSE headers/framing, the no-key path returns a clean `error` event, bad bodies return 400, examples and municipality search work. Live check is pending the user's key.

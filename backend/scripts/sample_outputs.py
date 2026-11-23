@@ -10,7 +10,7 @@ import django
 sys.path.insert(0, ".")
 os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings"
 django.setup()
-from energy.tools import call_tool
+from energy.tools import call_tool  # noqa: E402
 
 
 def show(name, args):
