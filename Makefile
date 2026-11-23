@@ -41,4 +41,4 @@ eval:
 	cd backend && uv run python -m eval.run_eval
 
 mcp-inspect:
-	cd backend && npx @modelcontextprotocol/inspector uv run python -m mcp_server.server
+	npx @modelcontextprotocol/inspector uv run --directory $(CURDIR)/backend python -m mcp_server.server

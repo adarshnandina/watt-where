@@ -102,3 +102,17 @@ Plain-language notes on what was built and why, one entry per phase.
 
 **NOT yet verified (be honest in interviews):**
 - The browser end-to-end run of the 5 example questions, the Stop button mid-stream, and the 3 screenshots in `docs/screenshots/`. These need a real `ANTHROPIC_API_KEY` in `.env` (still the placeholder) and a browser. What *was* verified: all real tool payloads from the real database pass the frontend type guards (so no display would be silently dropped), the SSE protocol works over real uvicorn, and the unit tests above.
+
+## Phase 6: MCP server
+**Built:** `backend/mcp_server/server.py` (stdio), 5 in-process tests, README section with the Claude Desktop config. Verified three ways: a real MCP client over stdio (lists the 6 tools + `wattwhere://schema`, `capacity_summary` for Freiburg solar returns 103.83 MW, bad input is flagged `isError`), the official **MCP Inspector CLI** (`tools/list` shows all six), and pytest.
+
+**Design point (interview material): one tool layer, two front doors.** The server contains no tool logic. It loops over `energy.tools.REGISTRY` and registers each tool with the registry's own description and JSON schema. The web agent reads the same registry. A fix or new tool is made once and appears in both places.
+
+**Details that bit me:**
+- `mcp` 2.x renamed `FastMCP` to `MCPServer` (`mcp.server.mcpserver`). Same official SDK, so I used it and checked the actual API rather than writing 1.x code. (Deviation from the spec's name only.)
+- The SDK passes unset optional parameters as `None`, but the registry's strict JSON schema means "omitted", so the handler drops `None`s first.
+- Reusing the function's signature leaked its `-> ToolResult` return annotation, which the SDK tried to treat as structured output. Fixed with an explicit signature returning `str`.
+- Sync tools run in worker threads; the handler closes their DB connections after each call.
+- `display` payloads (GeoJSON) are intentionally omitted from MCP results; clients get `llm_content` JSON plus the one-line summary. Errors raise `ToolError` so clients see `isError`.
+- stdout is the protocol channel; logging is configured to stderr before anything else is imported.
+- I override the SDK's inferred schema using its internal `_tool_manager` attribute so clients see enums/ranges. It's the one place that relies on a private attribute; a test (`test_lists_exactly_the_registry_tools_with_registry_schemas`) will fail loudly if an SDK upgrade breaks it.
