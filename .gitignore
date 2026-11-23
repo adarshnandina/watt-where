@@ -1,0 +1,13 @@
+.env
+data/
+node_modules/
+__pycache__/
+.venv/
+*.sqlite
+*.sqlite3
+dist/
+.DS_Store
+.pytest_cache/
+.ruff_cache/
+*.pyc
+.claude/
