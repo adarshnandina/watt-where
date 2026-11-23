@@ -83,3 +83,22 @@ Plain-language notes on what was built and why, one entry per phase.
 **Deviation / gotchas:**
 - The installed `anthropic` SDK (2.12) uses `httpx2`, so test fakes build errors with `httpx2`. I verified `messages.stream(...)`, `text_stream` and `get_final_message()` exist in the installed version rather than trusting memory.
 - **Not yet verified live:** `.env` still holds the placeholder `ANTHROPIC_API_KEY`, so the curl acceptance check against the real model could not run. Verified instead: real uvicorn serves proper SSE headers/framing, the no-key path returns a clean `error` event, bad bodies return 400, examples and municipality search work. Live check is pending the user's key.
+
+## Phase 5: Frontend
+**Built:** Vite + React + TypeScript (`strict: true`) app. `api/sse.ts` (POST-based SSE client + parser + type guards), `api/types.ts` (mirrors `agent/events.py`), `hooks/useChat.ts` (reducer), components (`ChatPanel`, `MessageList`, `Message`, `ToolCallChip`, `Composer`, `ExampleQuestions`, `MapView`, `ChartCard`, `ResultTable`), footer with attributions + data snapshot date. 23 vitest tests; `npm run build` has zero TypeScript errors; `npm run lint` is clean.
+
+**Design decisions:**
+- **`fetch` + stream reader instead of `EventSource`:** `EventSource` can't POST. The parser keeps a buffer, so frames split across network chunks (tested at *every* cut position), several frames per chunk, CRLF, comment/heartbeat lines and multi-line `data:` all work.
+- **Reducer for chat state:** one streamed event often changes several things; a pure reducer is easy to reason about and to unit-test. It also makes "Stop" safe: `finish` un-sticks tool chips that never got a result.
+- **Validation only at the JSON boundary:** `toChatEvent` turns untyped JSON into the typed `ChatEvent` union (or `null`). No `any` anywhere else.
+- **Map/chart/table are derived state:** `latestDisplays(messages)` picks what to show. Nothing is stored twice.
+- **Quantile classes** for the choropleth (duplicate breaks collapse, since many municipalities have 0 MW of wind), legend with units, hover tooltip, click pre-fills "Tell me about X".
+- The retry button removes the whole failed turn and re-sends it, so history never contains a duplicate question.
+
+**Deviations:**
+- The Vite template ships **oxlint**, not ESLint. I kept it (plus `prettier --check`) rather than add an ESLint toolchain; it covers the React hooks rules and runs in milliseconds. Easy to swap if ESLint is required.
+- React 19 / Vite 8 / TypeScript 7 (see Phase 0).
+- Bundle is ~980 kB (Leaflet + Recharts + markdown). Fine for a demo; code-splitting would be the next step.
+
+**NOT yet verified (be honest in interviews):**
+- The browser end-to-end run of the 5 example questions, the Stop button mid-stream, and the 3 screenshots in `docs/screenshots/`. These need a real `ANTHROPIC_API_KEY` in `.env` (still the placeholder) and a browser. What *was* verified: all real tool payloads from the real database pass the frontend type guards (so no display would be silently dropped), the SSE protocol works over real uvicorn, and the unit tests above.
