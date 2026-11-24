@@ -20,7 +20,8 @@ from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.db import connections
 
-from energy.tools import anthropic_tool_definitions, call_tool
+from energy.tools import REGISTRY, anthropic_tool_definitions, call_tool
+from energy.tools.base import error
 
 from . import events as ev
 
@@ -88,6 +89,7 @@ async def run_agent(
     model: str | None = None,
     max_rounds: int = MAX_TOOL_ROUNDS,
     backoff: float = RETRY_BACKOFF_SECONDS,
+    known_tools: set[str] | frozenset[str] = frozenset(REGISTRY),
 ) -> AsyncIterator[ev.Event]:
     started = time.monotonic()
     model = model or settings.ANTHROPIC_MODEL
@@ -148,17 +150,28 @@ async def run_agent(
                 )
                 break
 
-            for b in tool_uses:
+            # A model occasionally invents a tool name. That is a model slip, not something the user should see
+            # as a red chip: tell the model (so it can retry) and log it, but emit no UI events for it.
+            known = [b for b in tool_uses if b.name in known_tools]
+            for b in known:
                 yield ev.tool_call(b.id, b.name, b.input)
             # independent tool calls from the same turn run concurrently
-            results = await asyncio.gather(*(tool_runner(b.name, dict(b.input)) for b in tool_uses))
+            outcomes = await asyncio.gather(*(tool_runner(b.name, dict(b.input)) for b in known))
+            by_id = {b.id: o for b, o in zip(known, outcomes, strict=True)}
 
             result_blocks = []
-            for b, (res, ms) in zip(tool_uses, results, strict=True):
-                yield ev.tool_result(b.id, b.name, res.summary, res.ok, ms)
-                for payload in res.display:  # heavy payloads go to the UI only
-                    yield ev.display(b.id, payload)
-                tools_log.append({"name": b.name, "ok": res.ok, "ms": ms})
+            for b in tool_uses:
+                if b.id in by_id:
+                    res, ms = by_id[b.id]
+                    yield ev.tool_result(b.id, b.name, res.summary, res.ok, ms)
+                    for payload in res.display:  # heavy payloads go to the UI only
+                        yield ev.display(b.id, payload)
+                else:
+                    log.warning("model called unknown tool %r", b.name)
+                    res, ms = error(f"Unknown tool '{b.name}'", available=sorted(known_tools)), 0
+                tools_log.append(
+                    {"name": b.name, "ok": res.ok, "ms": ms, **({} if b.id in by_id else {"unknown": True})}
+                )
                 result_blocks.append({
                     "type": "tool_result",
                     "tool_use_id": b.id,

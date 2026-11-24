@@ -96,7 +96,7 @@ async def test_parallel_tool_calls_run_concurrently():
 
 
 async def test_failed_tool_is_reported_and_marked_error_for_the_model():
-    client = FakeClient([round_([], [tool_block("t1", "x")], stop="tool_use"), round_(["sorry"])])
+    client = FakeClient([round_([], [tool_block("t1", "capacity_summary")], stop="tool_use"), round_(["sorry"])])
     events, _ = await collect(client, FakeTools(ok=False))
     assert [d["ok"] for t, d in events if t == "tool_result"] == [False]
     assert client.calls[1]["messages"][-1]["content"][0]["is_error"] is True
@@ -145,7 +145,7 @@ async def test_client_disconnect_stops_stream_and_further_tools():
 
 async def test_cancel_during_tool_execution_via_heartbeat_wrapper():
     """The SSE wrapper cancels the agent when the consumer goes away; no more LLM rounds follow."""
-    client = FakeClient([round_([], [tool_block("t", "x")], stop="tool_use"), round_(["late"])])
+    client = FakeClient([round_([], [tool_block("t", "capacity_summary")], stop="tool_use"), round_(["late"])])
     tools = FakeTools(delay=10)
     stream = ev.with_heartbeat(run_agent(MSGS, "S", client, tool_runner=tools), interval=5)
     first = await anext(stream)
@@ -180,3 +180,16 @@ async def test_thinking_blocks_are_passed_back_unchanged_after_tool_use():
     assistant = client.calls[1]["messages"][-2]["content"]
     assert assistant[0] == {"type": "thinking", "thinking": "hmm", "signature": "sig123"}
     assert assistant[1]["type"] == "tool_use"
+
+
+async def test_unknown_tool_is_hidden_from_ui_but_reported_to_the_model():
+    blocks = [tool_block("t1", "capacity_summary", {"area": "region"}), tool_block("t2", "timeseries_placeholder", {})]
+    client = FakeClient([round_([], blocks, stop="tool_use"), round_(["recovered"])])
+    events, tools = await collect(client)
+    shown = [d["name"] for t, d in events if t in ("tool_call", "tool_result")]
+    assert shown == ["capacity_summary", "capacity_summary"]  # no chip for the invented tool
+    assert tools.calls == [("capacity_summary", {"area": "region"})]  # and it was never executed
+    results = client.calls[1]["messages"][-1]["content"]
+    assert [r["tool_use_id"] for r in results] == ["t1", "t2"]  # the API needs a result for every tool_use
+    assert results[1]["is_error"] is True and "capacity_timeseries" in results[1]["content"]
+    assert "recovered" in "".join(d["text"] for t, d in events if t == "text_delta")
