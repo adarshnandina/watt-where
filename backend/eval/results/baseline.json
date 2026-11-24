@@ -1,0 +1,892 @@
+{
+  "label": "baseline",
+  "model": "claude-haiku-5-5",
+  "timestamp": "2026-11-24T12:57:17",
+  "prompt_fingerprint": "bc08887bff",
+  "items": [
+    {
+      "id": "lookup-1",
+      "category": "lookup",
+      "question": "How much solar capacity is installed in Freiburg im Breisgau?",
+      "truth": {
+        "units": 9854,
+        "mw": 103.82969100000334,
+        "storage_mwh": 0.0
+      },
+      "answer": "Freiburg im Breisgau has about **103.8 MW** of solar capacity installed (net capacity, units in operation). That comes from 9,854 units, or about 0.44 kW per inhabitant.",
+      "tools": [
+        "find_municipality",
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 1667,
+        "output_tokens": 207,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 2.06,
+      "passed": true,
+      "checks": {
+        "number:mw": {
+          "ok": true,
+          "detail": "expected 103.8"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "lookup-2",
+      "category": "lookup",
+      "question": "How many wind turbines are there in the Breisgau-Hochschwarzwald district?",
+      "truth": {
+        "units": 18,
+        "mw": 27.2538,
+        "storage_mwh": 0.0
+      },
+      "answer": "The district key is 08315. Now I'll get the wind figures for it.The Breisgau-Hochschwarzwald district has **18 wind units in operation**, with a combined net capacity of about 27.25 MW (default settings: net capacity, units in operation, all dates).",
+      "tools": [
+        "find_municipality",
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 2141,
+        "output_tokens": 461,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 4.09,
+      "passed": true,
+      "checks": {
+        "number:units": {
+          "ok": true,
+          "detail": "expected 18"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "lookup-3",
+      "category": "lookup",
+      "question": "What is the usable battery storage capacity in Freiburg im Breisgau, in MWh?",
+      "truth": {
+        "units": 4138,
+        "mw": 25.454464999999523,
+        "storage_mwh": 40.57821299999979
+      },
+      "answer": "Freiburg im Breisgau has about **40.6 MWh** of usable battery storage (40,578 kWh) across 4,138 units in operation. That is the usable storage figure, not the net power capacity, which is 25.45 MW.",
+      "tools": [
+        "find_municipality",
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 1705,
+        "output_tokens": 266,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 2.87,
+      "passed": true,
+      "checks": {
+        "number:storage_mwh": {
+          "ok": true,
+          "detail": "expected 40.58"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "lookup-4",
+      "category": "lookup",
+      "question": "How many inhabitants does Staufen im Breisgau have?",
+      "truth": {
+        "population": 8392
+      },
+      "answer": "Staufen im Breisgau (district Breisgau-Hochschwarzwald) has **8,392 inhabitants** according to the BKG population data (as of 2025-12-31).",
+      "tools": [
+        "find_municipality"
+      ],
+      "usage": {
+        "input_tokens": 710,
+        "output_tokens": 119,
+        "cache_read_input_tokens": 6136
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 1.96,
+      "passed": true,
+      "checks": {
+        "number:population": {
+          "ok": true,
+          "detail": "expected 8,392"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "lookup-5",
+      "category": "lookup",
+      "question": "What is the installed hydropower capacity in the district of Waldshut?",
+      "truth": {
+        "units": 68,
+        "mw": 226.20292999999998,
+        "storage_mwh": 0.0
+      },
+      "answer": "The installed hydropower capacity in the Landkreis Waldshut is **226.2 MW** across 68 units, or about 1.3 kW per inhabitant. These figures are net capacity for units currently in operation. The district is highlighted on the map.",
+      "tools": [
+        "find_municipality",
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 1815,
+        "output_tokens": 347,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 3.28,
+      "passed": true,
+      "checks": {
+        "number:mw": {
+          "ok": true,
+          "detail": "expected 226.2"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "ranking-1",
+      "category": "ranking",
+      "question": "Which 10 municipalities in Baden-Württemberg with at least 1,000 inhabitants have the most solar capacity per inhabitant?",
+      "truth": {
+        "names": [
+          "Langenenslingen",
+          "Külsheim",
+          "Rosenberg",
+          "Attenweiler",
+          "Hardheim",
+          "Langenburg",
+          "Gutenzell-Hürbel",
+          "Braunsbach",
+          "Roigheim",
+          "Ahorn"
+        ],
+        "top1_name": "Langenenslingen",
+        "top1_value": 25.421462719298244
+      },
+      "answer": "The top 10 municipalities by solar capacity per inhabitant (net capacity, units in operation, municipalities with at least 1,000 inhabitants) are:\n\n1. **Langenenslingen** (Biberach): 25.4 kW/inhabitant (92.7 MW)\n2. **Külsheim** (Main-Tauber-Kreis): 25.0 kW/inhabitant (132.8 MW)\n3. **Rosenberg** (Neckar-Odenwald-Kreis): 13.2 kW/inhabitant (26.3 MW)\n4. **Attenweiler** (Biberach): 11.3 kW/inhabitant (22.1 MW)\n5. **Hardheim** (Neckar-Odenwald-Kreis): 11.0 kW/inhabitant (72.9 MW)\n6. **Langenburg** (Schwäbisch Hall): 11.0 kW/inhabitant (19.2 MW)\n7. **Gutenzell-Hürbel** (Biberach): 10.9 kW/inhabitant (19.6 MW)\n8. **Braunsbach** (Schwäbisch Hall): 10.3 kW/inhabitant (25.5 MW)\n9. **Roigheim** (Heilbronn): 9.6 kW/inhabitant (14.2 MW)\n10. **Ahorn** (Main-Tauber-Kreis): 8.9 kW/inhabitant (19.8 MW)\n\nThe first two stand out well above the rest. The map shows all 1,028 municipalities in the ranking.",
+      "tools": [
+        "rank_municipalities"
+      ],
+      "usage": {
+        "input_tokens": 1414,
+        "output_tokens": 814,
+        "cache_read_input_tokens": 6136
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 4.29,
+      "passed": true,
+      "checks": {
+        "number:top1_value": {
+          "ok": true,
+          "detail": "expected 25.42"
+        },
+        "names": {
+          "ok": true,
+          "detail": "all 10 present"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "ranking-2",
+      "category": "ranking",
+      "question": "Which municipality in Baden-Württemberg has the most installed wind capacity, and how many MW is that?",
+      "truth": {
+        "names": [
+          "Blaufelden"
+        ],
+        "top1_name": "Blaufelden",
+        "top1_value": 70.76
+      },
+      "answer": "**Blaufelden** (Landkreis Schwäbisch Hall) has the most installed wind capacity in Baden-Württemberg: **70.8 MW** net across 23 operating units.\n\nThe next largest are Boxberg (67.7 MW), Creglingen (65.8 MW), Bühlertann (57.8 MW) and Ellwangen (Jagst) (53.7 MW). The ranking covers all 1,103 municipalities, and the map shows the distribution. Figures are net capacity for units in operation, as of the 2026-11-23 MaStR snapshot.",
+      "tools": [
+        "rank_municipalities"
+      ],
+      "usage": {
+        "input_tokens": 897,
+        "output_tokens": 415,
+        "cache_read_input_tokens": 6136
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 3.3,
+      "passed": true,
+      "checks": {
+        "number:top1_value": {
+          "ok": true,
+          "detail": "expected 70.76"
+        },
+        "names": {
+          "ok": true,
+          "detail": "all 1 present"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "ranking-3",
+      "category": "ranking",
+      "question": "Which five municipalities in the Breisgau-Hochschwarzwald district have the most solar capacity?",
+      "truth": {
+        "names": [
+          "Breisach am Rhein",
+          "Bad Krozingen",
+          "Auggen",
+          "Löffingen",
+          "Müllheim im Markgräflerland"
+        ],
+        "top1_name": "Breisach am Rhein",
+        "top1_value": 27.81730800000001
+      },
+      "answer": "In Breisgau-Hochschwarzwald, the five municipalities with the most solar capacity are (net capacity, units in operation, as of the 2026-11-23 MaStR snapshot):\n\n1. **Breisach am Rhein**: 27.8 MW (1,753 units)\n2. **Bad Krozingen**: 23.1 MW (1,771 units)\n3. **Auggen**: 22.4 MW (409 units)\n4. **Löffingen**: 20.8 MW (1,092 units)\n5. **Müllheim im Markgräflerland**: 20.4 MW (1,744 units)\n\nThese totals include small rooftop systems, which have no public coordinates, so they do not appear as map points. The ranking is absolute (no per-capita filter), so Auggen's high position partly reflects a large system relative to its small population of about 2,800. The ranking covers all 50 municipalities in the district.",
+      "tools": [
+        "rank_municipalities"
+      ],
+      "usage": {
+        "input_tokens": 982,
+        "output_tokens": 516,
+        "cache_read_input_tokens": 6136
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 3.7,
+      "passed": true,
+      "checks": {
+        "names": {
+          "ok": true,
+          "detail": "all 5 present"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "ranking-4",
+      "category": "ranking",
+      "question": "Which municipality has the most battery storage units, and how many?",
+      "truth": {
+        "names": [
+          "Stuttgart"
+        ],
+        "top1_name": "Stuttgart",
+        "top1_value": 8682.0
+      },
+      "answer": "**Stuttgart** has the most battery storage units in Baden-Württemberg: **8,682 units** in operation, with a combined net capacity of 47.24 MW. Freiburg im Breisgau is fourth with 4,138 units (25.45 MW). The ranking is shown on the map.\n\nDefaults: units in operation, net capacity, all storage units across the 1,103 municipalities in the region. Most small home batteries have no public coordinates, but these counts come from municipality totals, so they include them.",
+      "tools": [
+        "rank_municipalities"
+      ],
+      "usage": {
+        "input_tokens": 1288,
+        "output_tokens": 443,
+        "cache_read_input_tokens": 6136
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 3.57,
+      "passed": true,
+      "checks": {
+        "number:top1_value": {
+          "ok": true,
+          "detail": "expected 8,682"
+        },
+        "names": {
+          "ok": true,
+          "detail": "all 1 present"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "ranking-5",
+      "category": "ranking",
+      "question": "Which municipalities in the Ortenaukreis have the most solar capacity in MW? Name the top three.",
+      "truth": {
+        "names": [
+          "Offenburg",
+          "Kehl",
+          "Lahr/Schwarzwald"
+        ],
+        "top1_name": "Offenburg",
+        "top1_value": 55.88268
+      },
+      "answer": "In the Ortenaukreis, the three municipalities with the most installed solar capacity (net, units in operation) are:\n\n1. **Offenburg**: 55.9 MW (4,056 units)\n2. **Kehl**: 47.5 MW (3,205 units)\n3. **Lahr/Schwarzwald**: 43.8 MW (2,875 units)\n\nThese figures include rooftop systems, so the map shows only the units with public coordinates. See the choropleth map for the full ranking of all 52 municipalities in the district.",
+      "tools": [
+        "run_readonly_sql",
+        "rank_municipalities"
+      ],
+      "usage": {
+        "input_tokens": 1458,
+        "output_tokens": 603,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 4.39,
+      "passed": true,
+      "checks": {
+        "names": {
+          "ok": true,
+          "detail": "all 3 present"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "spatial-1",
+      "category": "spatial",
+      "question": "Show me wind turbines within 25 km of Freiburg.",
+      "truth": {
+        "units": 23,
+        "mw": 57.63
+      },
+      "answer": "Within 25 km of Freiburg's centre there are **23 wind units in operation with public coordinates**, totalling **57.63 MW** net capacity (default settings: net capacity, units in operation). The map shows their locations. The tool also reports 6 further units nearby without published coordinates, so the true total may be slightly higher.\n\n- Largest units: three 4.2–5.6 MW turbines in Freiburg itself (commissioned 2024–2026), plus turbines in Gundelfingen and Freiamt.\n- Several older turbines (about 3 MW each, 2013–2014) sit around St. Peter and Gutach im Breisgau, roughly 21 km out.",
+      "tools": [
+        "find_municipality",
+        "units_near"
+      ],
+      "usage": {
+        "input_tokens": 2394,
+        "output_tokens": 519,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 4.15,
+      "passed": true,
+      "checks": {
+        "number:units": {
+          "ok": true,
+          "detail": "expected 23"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        },
+        "caveat:coordinates/koordinaten": {
+          "ok": true,
+          "detail": "none of ['coordinates', 'koordinaten']"
+        }
+      }
+    },
+    {
+      "id": "spatial-2",
+      "category": "spatial",
+      "question": "What is the largest biomass plant within 20 km of Freiburg im Breisgau, and what is its capacity?",
+      "truth": {
+        "largest_kw": 2500.0,
+        "largest_mw": 2.5
+      },
+      "answer": "The largest biomass unit within 20 km of Freiburg im Breisgau is in **Freiburg itself**, about 1.8 km from the city centre. It has a net capacity of **2.5 MW** (2,500 kW) and was commissioned in 2024.\n\n- The next largest are 1.72 MW (Freiburg, commissioned 2000) and 0.98 MW (Freiburg, 2022).\n- The 18 biomass units with public coordinates total 9.96 MW net. Fourteen further matching units in surrounding municipalities have no published coordinates, so the true total and the largest unit could differ slightly.\n\nDefaults: net capacity, units in operation, 20 km radius from the city centre. See the map for the locations.",
+      "tools": [
+        "find_municipality",
+        "units_near"
+      ],
+      "usage": {
+        "input_tokens": 2476,
+        "output_tokens": 516,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 3.95,
+      "passed": true,
+      "checks": {
+        "number:largest_kw": {
+          "ok": true,
+          "detail": "expected 2,500"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "spatial-3",
+      "category": "spatial",
+      "question": "How many wind turbines within 15 km of Emmendingen are in operation?",
+      "truth": {
+        "units": 13,
+        "mw": 44.33
+      },
+      "answer": "Within 15 km of Emmendingen, **13 wind turbines in operation** have public coordinates, with a combined net capacity of **44.33 MW** (see the map). The tool also reports 5 more matching wind units in surrounding municipalities that lack coordinates, so the true count could be up to 18. The MW figure covers only the 13 mapped units.\n\nDefaults: net capacity, units in operation, 15 km radius from the Emmendingen municipal centre.",
+      "tools": [
+        "find_municipality",
+        "units_near"
+      ],
+      "usage": {
+        "input_tokens": 2511,
+        "output_tokens": 530,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 4.17,
+      "passed": true,
+      "checks": {
+        "number:units": {
+          "ok": true,
+          "detail": "expected 13"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        },
+        "caveat:coordinates/koordinaten": {
+          "ok": true,
+          "detail": "none of ['coordinates', 'koordinaten']"
+        }
+      }
+    },
+    {
+      "id": "spatial-4",
+      "category": "spatial",
+      "question": "Are there any hydropower plants within 10 km of Freiburg im Breisgau? How many?",
+      "truth": {
+        "units": 4,
+        "mw": 0.955
+      },
+      "answer": "Yes. Within 10 km of Freiburg im Breisgau's centre there are **4 hydropower plants** with public coordinates, with a combined net capacity of **0.95 MW**. The largest is a 600 kW unit in Kirchzarten (about 9 km away), and the other three are in Freiburg itself (200 kW, 80 kW and 75 kW). See the map for their locations.\n\nThe tool also reports **15 more units in the surrounding municipalities without published coordinates**, so the true number is likely higher. It doesn't confirm that all 15 are hydro, so treat that figure with caution.\n\n(Defaults: net capacity, units in operation, 10 km radius from the municipality centre.)",
+      "tools": [
+        "find_municipality",
+        "units_near"
+      ],
+      "usage": {
+        "input_tokens": 1968,
+        "output_tokens": 582,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 4.61,
+      "passed": true,
+      "checks": {
+        "number:units": {
+          "ok": true,
+          "detail": "expected 4"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        },
+        "caveat:coordinates/koordinaten": {
+          "ok": true,
+          "detail": "none of ['coordinates', 'koordinaten']"
+        }
+      }
+    },
+    {
+      "id": "spatial-5",
+      "category": "spatial",
+      "question": "How many solar installations of at least 1 MW are located within 30 km of Freiburg im Breisgau?",
+      "truth": {
+        "units": 12,
+        "mw": 44.1238
+      },
+      "answer": "**12 solar installations** of at least 1 MW are within 30 km of Freiburg im Breisgau, with a combined net capacity of **about 44.1 MW**. These are units in operation, using net capacity. The largest is a 16.5 MW unit in Auggen, about 28 km away. See the map for the locations.\n\nThe distance is measured from the Freiburg city centre. The tool found no matching units without coordinates nearby, so the count should be complete for this size class.",
+      "tools": [
+        "find_municipality",
+        "units_near"
+      ],
+      "usage": {
+        "input_tokens": 2508,
+        "output_tokens": 639,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 6.25,
+      "passed": true,
+      "checks": {
+        "number:units": {
+          "ok": true,
+          "detail": "expected 12"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        },
+        "caveat:coordinates/koordinaten": {
+          "ok": true,
+          "detail": "none of ['coordinates', 'koordinaten']"
+        }
+      }
+    },
+    {
+      "id": "time-1",
+      "category": "timeseries",
+      "question": "How has battery storage capacity in Freiburg grown since 2015? What is the total installed power now?",
+      "truth": {
+        "mw": 25.454464999999523
+      },
+      "answer": "Battery storage in Freiburg grew from 0.18 MW installed in 2015 to **25.45 MW** of net capacity in operation today, across 4,138 units. The growth was slow until 2022 (3.94 MW), then accelerated sharply in 2023, when it jumped by about 5.8 MW in one year. Additions have stayed at roughly 5–6 MW per year since then. The chart shows the cumulative curve.\n\n- Total usable storage is about 40.6 MWh (40,578 kWh), which is a separate figure from the 25.45 MW power rating.\n- These totals use net capacity and units in operation. The 2026 figure reflects the data snapshot of 2026-11-23, so it may be a partial year.\n- Most home batteries have no public coordinates, so the map would show only a small part of these units. I can list the municipal total, but not map individual units.",
+      "tools": [
+        "find_municipality",
+        "capacity_timeseries",
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 2122,
+        "output_tokens": 691,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 4.59,
+      "passed": true,
+      "checks": {
+        "number:mw": {
+          "ok": true,
+          "detail": "expected 25.45"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "time-2",
+      "category": "timeseries",
+      "question": "How much solar capacity was added in Freiburg im Breisgau in 2022?",
+      "truth": {
+        "mw": 5.330300999999995
+      },
+      "answer": "In 2022, Freiburg im Breisgau added **5.33 MW** of solar capacity across 428 units (net capacity, units in operation, commissioned in 2022).\n\nThe figure includes small rooftop systems, so it is the municipality total and does not depend on map coordinates. The timeseries tool can show how this compares with earlier and later years if you want the trend.",
+      "tools": [
+        "find_municipality",
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 1733,
+        "output_tokens": 311,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 3.16,
+      "passed": false,
+      "checks": {
+        "number:mw": {
+          "ok": true,
+          "detail": "expected 5.33"
+        },
+        "tools": {
+          "ok": false,
+          "detail": "missing ['capacity_timeseries']; called ['find_municipality', 'capacity_summary']"
+        }
+      }
+    },
+    {
+      "id": "time-3",
+      "category": "timeseries",
+      "question": "How much wind capacity was installed in the Breisgau-Hochschwarzwald district at the end of 2015?",
+      "truth": {
+        "mw": 17.882099999999998
+      },
+      "answer": "At the end of 2015, the Breisgau-Hochschwarzwald district had about **17.9 MW** of installed wind capacity (net), spread across 13 units. The timeseries counts only units commissioned by 31 Dec 2015, with decommissioned units removed. Installed capacity was flat from 2013 to 2015, after a jump of about 6 MW in 2013.",
+      "tools": [
+        "capacity_summary",
+        "capacity_timeseries"
+      ],
+      "usage": {
+        "input_tokens": 1911,
+        "output_tokens": 1286,
+        "cache_read_input_tokens": 6136
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 6.81,
+      "passed": true,
+      "checks": {
+        "number:mw": {
+          "ok": true,
+          "detail": "expected 17.88"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "time-4",
+      "category": "timeseries",
+      "question": "How many MW of solar were installed in all of Baden-Württemberg at the end of 2020?",
+      "truth": {
+        "mw": 6266.7464319997525
+      },
+      "answer": "At the end of 2020, about **6,216 MW** (≈6.2 GW) of solar was installed across Baden-Württemberg, from 371,809 units.\n\nThis uses net capacity and counts only units still in operation (decommissioned units are excluded), commissioned up to 31 Dec 2020. The figure is based on the current register, so it may differ slightly from historical reports.",
+      "tools": [
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 680,
+        "output_tokens": 335,
+        "cache_read_input_tokens": 6136
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 2.89,
+      "passed": false,
+      "checks": {
+        "number:mw": {
+          "ok": true,
+          "detail": "expected 6,267"
+        },
+        "tools": {
+          "ok": false,
+          "detail": "missing ['capacity_timeseries']; called ['capacity_summary']"
+        }
+      }
+    },
+    {
+      "id": "time-5",
+      "category": "timeseries",
+      "question": "In which year was the most solar capacity added in Freiburg im Breisgau?",
+      "truth": {
+        "year": 2024,
+        "mw": 14.344376000000043
+      },
+      "answer": "In Freiburg im Breisgau, the most solar capacity was added in **2024**, with about 14.3 MW net (see the chart). 2023 (12.1 MW) and 2025 (12.1 MW) were also strong years.\n\nThe figures are newly commissioned net capacity per year, including units that have since been decommissioned. 2026 is only a partial year in the snapshot.",
+      "tools": [
+        "find_municipality",
+        "capacity_timeseries"
+      ],
+      "usage": {
+        "input_tokens": 1818,
+        "output_tokens": 360,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 3.22,
+      "passed": true,
+      "checks": {
+        "number:year": {
+          "ok": true,
+          "detail": "expected 2,024"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "edge-1-typo",
+      "category": "edge",
+      "question": "How much solar capacity is there in Freiburgg im Brisgau?",
+      "truth": {
+        "units": 9854,
+        "mw": 103.82969100000334,
+        "storage_mwh": 0.0
+      },
+      "answer": "Freiburg im Breisgau has about **103.83 MW** of solar capacity installed (net capacity, units in operation). That comes from 9,854 units, or about 0.44 kW per inhabitant. The map highlights the city; the figure includes rooftop systems even though many of them have no public coordinates.",
+      "tools": [
+        "find_municipality",
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 1667,
+        "output_tokens": 239,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 2.86,
+      "passed": true,
+      "checks": {
+        "number:mw": {
+          "ok": true,
+          "detail": "expected 103.8"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    },
+    {
+      "id": "edge-2-out-of-scope",
+      "category": "edge",
+      "question": "What will the price of electricity be next year in Hamburg?",
+      "truth": {},
+      "answer": "I can't forecast electricity prices, and Hamburg is outside my data: I only cover Baden-Württemberg, with a focus on Freiburg im Breisgau. I can tell you about installed solar, wind, biomass, hydro and battery storage capacity for any municipality, district or the whole state, including how it has grown over time. For example, I can compare Freiburg's solar capacity with other municipalities in the region.",
+      "tools": [],
+      "usage": {
+        "input_tokens": 93,
+        "output_tokens": 194,
+        "cache_read_input_tokens": 3068
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 1.93,
+      "passed": true,
+      "checks": {
+        "no_forbidden_tools": {
+          "ok": true,
+          "detail": ""
+        },
+        "declines_without_figures": {
+          "ok": true,
+          "detail": "answer contains figures or tools were called"
+        }
+      }
+    },
+    {
+      "id": "edge-3-ambiguous",
+      "category": "edge",
+      "question": "How much solar capacity is there in Altdorf?",
+      "truth": {
+        "districts": [
+          "boblingen",
+          "esslingen"
+        ],
+        "n": 2
+      },
+      "answer": "There are two municipalities named Altdorf in Baden-Württemberg, so here are both. Solar figures are net capacity for units in operation:\n\n- **Altdorf (Landkreis Böblingen, 08115002):** 4.44 MW from 594 units, about 0.98 kW per inhabitant.\n- **Altdorf (Landkreis Esslingen, 08116005):** 1.87 MW from 247 units, about 1.10 kW per inhabitant.\n\nIf you meant a different Altdorf, tell me the district and I'll look it up. The map highlights the area I last queried, so it shows the Esslingen Altdorf.",
+      "tools": [
+        "find_municipality",
+        "capacity_summary",
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 2002,
+        "output_tokens": 581,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 4.39,
+      "passed": true,
+      "checks": {
+        "tools": {
+          "ok": true,
+          "detail": ""
+        },
+        "caveat:böblingen/boeblingen": {
+          "ok": true,
+          "detail": "none of ['böblingen', 'boeblingen']"
+        },
+        "caveat:esslingen": {
+          "ok": true,
+          "detail": "none of ['esslingen']"
+        }
+      }
+    },
+    {
+      "id": "edge-4-german",
+      "category": "edge",
+      "question": "Wie viel Solarleistung ist in Freiburg im Breisgau installiert?",
+      "truth": {
+        "units": 9854,
+        "mw": 103.82969100000334,
+        "storage_mwh": 0.0
+      },
+      "answer": "In Freiburg im Breisgau sind derzeit etwa **103,83 MW** Solarleistung installiert (Nettonennleistung, Anlagen in Betrieb, 9.854 Einheiten). Das entspricht rund 0,44 kW pro Einwohner (Einwohnerzahl 238.299).\n\nDie Summe umfasst auch die vielen kleinen Dachanlagen ohne öffentliche Koordinaten, daher sehen Sie auf der Karte nicht alle Anlagen. Die Gesamtzahl stammt aus den Gemeindeaggregaten.",
+      "tools": [
+        "find_municipality",
+        "capacity_summary"
+      ],
+      "usage": {
+        "input_tokens": 1685,
+        "output_tokens": 343,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 3.16,
+      "passed": true,
+      "checks": {
+        "number:mw": {
+          "ok": true,
+          "detail": "expected 103.8"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        },
+        "language_de": {
+          "ok": true,
+          "detail": "6 German markers"
+        }
+      }
+    },
+    {
+      "id": "edge-5-sql",
+      "category": "edge",
+      "question": "How many battery storage units in Baden-Württemberg have more than 1,000 kWh of usable storage capacity?",
+      "truth": {
+        "units": 159
+      },
+      "answer": "**87 battery storage units** in Baden-Württemberg that are in operation have more than 1,000 kWh of usable storage capacity. Together they provide about 431,174 kWh (roughly 431 MWh).\n\nThis uses the in-operation status and the usable storage capacity field. I ran this as a direct database query because no structured tool filters storage units by capacity.",
+      "tools": [
+        "run_readonly_sql",
+        "run_readonly_sql"
+      ],
+      "usage": {
+        "input_tokens": 1446,
+        "output_tokens": 880,
+        "cache_read_input_tokens": 9204
+      },
+      "errors": [],
+      "stop_reason": "end_turn",
+      "latency_s": 5.6,
+      "passed": false,
+      "checks": {
+        "number:units": {
+          "ok": false,
+          "detail": "expected 159"
+        },
+        "tools": {
+          "ok": true,
+          "detail": ""
+        }
+      }
+    }
+  ]
+}

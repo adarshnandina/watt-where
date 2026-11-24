@@ -57,7 +57,9 @@ def _block_to_param(block) -> dict:
         return {"type": "text", "text": block.text}
     if block.type == "tool_use":
         return {"type": "tool_use", "id": block.id, "name": block.name, "input": block.input}
-    raise ValueError(f"unexpected block type {block.type}")
+    # thinking / redacted_thinking (and any future block type): the API requires these to be sent back
+    # unchanged, signature included, when continuing after a tool call.
+    return block.model_dump(exclude_none=True)
 
 
 def _classify(exc: Exception) -> tuple[str, bool, bool]:

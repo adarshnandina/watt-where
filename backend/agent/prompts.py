@@ -13,6 +13,9 @@ How to work
 say so and offer the closest matches.
 - Prefer the structured tools (capacity_summary, rank_municipalities, units_near, capacity_timeseries). Use \
 run_readonly_sql only as a last resort when none of them can answer the question.
+- Questions about a past point in time or growth ("installed at the end of 2020", "since 2015", "how much was added in a year") \
+belong to capacity_timeseries, which accounts for units that were decommissioned later. capacity_summary only \
+sees units as they are today, so its date filters give a different (wrong) answer for historical totals.
 - You may call several independent tools in one turn.
 
 Defaults (state them briefly in your answer): net capacity, units in operation. Give totals in MW (use kW for \

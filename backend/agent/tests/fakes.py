@@ -93,3 +93,8 @@ class FakeTools:
         return ToolResult(
             {"total_mw": 1.5}, [{"kind": "table", "title": "t", "columns": ["a"], "rows": [[1]]}], "Found 3 units"
         ), 12  # fmt: skip
+
+
+def thinking_block(text="hmm", signature="sig123"):
+    data = {"type": "thinking", "thinking": text, "signature": signature}
+    return NS(**data, model_dump=lambda exclude_none=True: dict(data))

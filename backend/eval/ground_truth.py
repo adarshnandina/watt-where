@@ -128,13 +128,12 @@ def best_year(municipality: str, technology: str) -> dict:
 
 
 def storage_over_kwh(kwh: float) -> dict:
-    return {
-        "units": int(
-            _q(
-                "SELECT count(*) FROM energy_energyunit WHERE technology='storage' AND storage_capacity_kwh > %s", [kwh]
-            )[0][0]
-        )
-    }
+    """Units in operation (the app's documented default) with more than `kwh` usable storage."""
+    sql = (
+        "SELECT count(*) FROM energy_energyunit "
+        "WHERE technology='storage' AND status='in_operation' AND storage_capacity_kwh > %s"
+    )
+    return {"units": int(_q(sql, [kwh])[0][0])}
 
 
 def ambiguous_name(name: str) -> dict:

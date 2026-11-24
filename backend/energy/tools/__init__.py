@@ -53,7 +53,9 @@ _TOOLS = [
     _tool(
         "capacity_summary", capacity_summary,
         "Installed capacity totals for an area: units, net capacity (MW), kW per inhabitant, and usable storage kWh, "
-        "broken down by technology. Defaults: net capacity, units in operation. Also highlights the area on the map.",
+        "broken down by technology. Defaults: net capacity, units in operation. Also highlights the area on the map. "
+        "Shows the CURRENT state: the commissioned_from/to filters only select units that are still in the chosen status today, "
+        "so for historical totals ('at the end of 2020') or growth over time use capacity_timeseries instead.",
         {"area": _AREA,
          "technologies": {"type": "array", "items": _TECH, "description": "Omit for all technologies"},
          "status": {"type": "string", "enum": ["in_operation", "planned", "decommissioned", "other", "any"], "default": "in_operation"},

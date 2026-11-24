@@ -7,7 +7,7 @@ import pytest
 from agent import events as ev
 from agent.loop import run_agent
 
-from .fakes import HANG, FakeClient, FakeTools, auth_error, rate_limit, round_, text_block, tool_block
+from .fakes import HANG, FakeClient, FakeTools, auth_error, rate_limit, round_, text_block, thinking_block, tool_block
 
 MSGS = [{"role": "user", "content": "How much solar in Freiburg?"}]
 
@@ -171,3 +171,12 @@ async def test_heartbeat_ping_emitted_during_silence():
 def test_encode_framing():
     s = ev.encode(ev.text_delta("Grüße\nzwei"))
     assert s == 'event: text_delta\ndata: {"text": "Grüße\\nzwei"}\n\n'
+
+
+async def test_thinking_blocks_are_passed_back_unchanged_after_tool_use():
+    blocks = [thinking_block(), tool_block("t1", "capacity_summary", {"area": "region"})]
+    client = FakeClient([round_([], blocks, stop="tool_use"), round_(["ok"])])
+    await collect(client)
+    assistant = client.calls[1]["messages"][-2]["content"]
+    assert assistant[0] == {"type": "thinking", "thinking": "hmm", "signature": "sig123"}
+    assert assistant[1]["type"] == "tool_use"

@@ -107,6 +107,9 @@ def score(q: dict, truth: dict, answer: str, tools_called: list[str]) -> dict:
     if q.get("expected_tools"):
         missing = [t for t in q["expected_tools"] if t not in tools_called]
         add("tools", not missing, f"missing {missing}; called {tools_called}" if missing else "")
+    if q.get("expected_tools_any"):
+        ok = any(t in tools_called for t in q["expected_tools_any"])
+        add("tools_any", ok, f"none of {q['expected_tools_any']}; called {tools_called}" if not ok else "")
     if q.get("forbid_tools"):
         bad = [t for t in tools_called if t in q["forbid_tools"]]
         add("no_forbidden_tools", not bad, f"called {bad}" if bad else "")

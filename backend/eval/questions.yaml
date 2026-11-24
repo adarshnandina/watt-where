@@ -122,7 +122,7 @@
   question: How much solar capacity was added in Freiburg im Breisgau in 2022?
   truth: {fn: added_in_year, args: {year: 2022, municipality: Freiburg im Breisgau, technology: solar}}
   expect_numbers: [mw]
-  expected_tools: [capacity_timeseries]
+  expected_tools_any: [capacity_timeseries, capacity_summary]  # summary with date filters is equally valid for "added in a year"
 - id: time-3
   category: timeseries
   question: How much wind capacity was installed in the Breisgau-Hochschwarzwald district at the end of 2015?

@@ -127,3 +127,11 @@ Plain-language notes on what was built and why, one entry per phase.
 - Questions are phrased so the truth is unambiguous (e.g. the per-capita ranking states "at least 1,000 inhabitants").
 
 **Status:** the LLM run itself needs `ANTHROPIC_API_KEY` (placeholder in `.env`). No baseline or improved score exists yet; `docs/EVAL.md` stays a stub until then. I won't invent scores.
+
+### Phase 7 update: evaluation run (live)
+Baseline 22/25 -> 24/25 after fixing two eval mistakes (same prompt) -> **25/25** (twice) after one prompt/tool-description change. Full table, reasoning and failure analysis: `docs/EVAL.md`, `backend/eval/CHANGES.md`. Model: `claude-haiku-5-5`. Average latency ~4 s per question.
+
+**Phase 4 live check done:** `curl -N` against `/api/chat` streams `message_start, tool_call, tool_result, display, text_delta, message_end`; prompt caching works (6k cache-read tokens on the second request).
+
+**Bug found only by the live run:** `thinking` content blocks crashed the loop (it only knew `text` and `tool_use`). Now passed back unchanged, as the API requires; regression test added. A reminder of why fake-client tests alone are not enough.
+**Ops note:** the Docker container stopped when Docker restarted; `make db-up` brings it back with data intact (named volume).
