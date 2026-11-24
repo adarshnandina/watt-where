@@ -28,11 +28,11 @@ export function ResultTable({ table }: { table: TableData }) {
   }, [table.rows, sort])
 
   return (
-    <div className="flex h-full min-h-[200px] flex-col rounded-lg border border-slate-200 bg-white p-3">
+    <div className="flex h-full min-h-[200px] flex-col rounded-2xl border border-line bg-card p-3 shadow-sm">
       <h3 className="mb-2 text-sm font-semibold">{table.title}</h3>
       <div className="min-h-0 flex-1 overflow-auto">
         <table className="w-full text-left text-xs">
-          <thead className="sticky top-0 bg-slate-50">
+          <thead className="sticky top-0 bg-stone-50">
             <tr>
               {table.columns.map((c, i) => (
                 <th
@@ -52,7 +52,7 @@ export function ResultTable({ table }: { table: TableData }) {
           </thead>
           <tbody>
             {rows.map((r, i) => (
-              <tr key={i} className="border-t border-slate-100">
+              <tr key={i} className="border-t border-stone-100">
                 {r.map((v, j) => (
                   <td
                     key={j}

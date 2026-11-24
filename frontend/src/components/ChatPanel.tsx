@@ -1,6 +1,7 @@
 import type { ChatError, ChatMessage } from '../hooks/useChat'
 import { Composer } from './Composer'
 import { ExampleQuestions } from './ExampleQuestions'
+import { BoltIcon, PlusIcon } from './icons'
 import { MessageList } from './MessageList'
 
 interface Props {
@@ -22,23 +23,23 @@ export function ChatPanel(p: Props) {
     p.onDraftChange('')
   }
   return (
-    <section className="flex h-full min-h-0 flex-col bg-white">
-      <header className="flex items-start justify-between gap-2 border-b border-slate-200 px-4 py-3">
-        <div className="min-w-0">
-          <h1 className="text-lg font-semibold">⚡ WattWhere</h1>
-          <p className="text-xs text-slate-500">
-            Ask questions about the energy transition in Baden-Württemberg, answered from official
-            data.
-          </p>
+    <section className="flex h-full min-h-0 flex-col">
+      <header className="flex h-14 shrink-0 items-center justify-between gap-2 px-4">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent text-white">
+            <BoltIcon width={15} height={15} />
+          </div>
+          <h1 className="text-[17px] font-semibold tracking-tight">WattWhere</h1>
         </div>
         <button
           type="button"
           onClick={p.onNewChat}
           disabled={p.messages.length === 0 && p.draft === ''}
           title="Clear this conversation and start a new one"
-          className="shrink-0 whitespace-nowrap rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-line bg-card px-3 py-1.5 text-sm font-medium shadow-sm hover:bg-bubble disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"
         >
-          ＋ New chat
+          <PlusIcon width={15} height={15} />
+          New chat
         </button>
       </header>
 
@@ -49,24 +50,26 @@ export function ChatPanel(p: Props) {
       )}
 
       {p.error && (
-        <div
-          role="alert"
-          className="mx-3 mb-2 flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
-        >
-          <span className="flex-1">{p.error.message}</span>
-          {p.error.retryable && (
-            <button type="button" onClick={p.onRetry} className="font-medium underline">
-              Retry
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={p.onDismissError}
-            aria-label="Dismiss"
-            className="text-red-500"
+        <div className="px-4">
+          <div
+            role="alert"
+            className="mx-auto mb-2 flex max-w-3xl items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
           >
-            ✕
-          </button>
+            <span className="flex-1">{p.error.message}</span>
+            {p.error.retryable && (
+              <button type="button" onClick={p.onRetry} className="font-medium underline">
+                Retry
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={p.onDismissError}
+              aria-label="Dismiss"
+              className="text-red-500"
+            >
+              ✕
+            </button>
+          </div>
         </div>
       )}
 

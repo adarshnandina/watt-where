@@ -112,7 +112,7 @@ function ChoroplethLegend({
       {lo.map((l, i) => (
         <div key={i} className="flex items-center gap-1.5">
           <span
-            className="inline-block h-3 w-4 border border-slate-300"
+            className="inline-block h-3 w-4 border border-stone-300"
             style={{ background: RAMP[i] }}
           />
           {fmt(l)} – {fmt(hi[i])}
@@ -173,7 +173,7 @@ function PointsLegend({ payload }: { payload: Extract<MapPayload, { kind: 'map_p
           {t}
         </div>
       ))}
-      <div className="mt-1 text-slate-500">
+      <div className="mt-1 text-stone-500">
         Size ~ capacity. Only units with public coordinates.
       </div>
     </div>

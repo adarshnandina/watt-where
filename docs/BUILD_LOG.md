@@ -152,3 +152,14 @@ README (pitch, Mermaid diagram, quickstart, design decisions, eval results, limi
 - Leaflet only measures its container once, so a `ResizeObserver` inside the map calls `invalidateSize()` whenever the panel changes size. Without that the map would show grey tiles after dragging.
 - Chart and table now fill their panel instead of using fixed heights.
 - Verified: typecheck, lint, 27 unit tests (layout maths + reducer), production build. **Not verified visually** (no browser available here): please drag the three dividers and click New chat once.
+
+## UI redesign: modern chat-app look
+Restyled to feel like current AI chat apps; behaviour, state and props are unchanged.
+- **Design tokens** in `index.css` (`@theme`): warm neutral page/card/line colours and one accent colour, so the palette can be changed in one place.
+- **Chat:** centred conversation column (`max-w-3xl`); assistant answers are plain text beside a small avatar (no bubble), user messages are soft rounded bubbles; "thinking" dots before the first token; copy button on finished answers; tool calls are compact collapsible rows with icons instead of coloured chips.
+- **Composer:** rounded, auto-growing textarea with a circular send button that turns into a stop button while streaming.
+- **Empty state:** greeting plus example questions as cards.
+- **Layout:** map and results are floating rounded cards; the draggable dividers are now slim pills that light up on hover (same drag logic, arrow-key support kept).
+- Icons are small inline SVGs (`components/icons.tsx`), no icon library.
+- **Tests:** new `ChatPanel.test.tsx` renders the real component to HTML and checks the New chat button (present always, disabled only when there is nothing to clear), Stop vs Send, tool row, thinking indicator and error banner. Added after the earlier bug where reducer tests were green but the button was missing.
+- Not visually verified by me (no browser here).

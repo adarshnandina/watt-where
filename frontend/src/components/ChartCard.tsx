@@ -19,7 +19,7 @@ export function ChartCard({ chart }: { chart: ChartData }) {
     return row
   })
   return (
-    <div className="flex h-full min-h-[200px] flex-col rounded-lg border border-slate-200 bg-white p-3">
+    <div className="flex h-full min-h-[200px] flex-col rounded-2xl border border-line bg-card p-3 shadow-sm">
       <h3 className="mb-2 text-sm font-semibold">{chart.title}</h3>
       <div className="min-h-0 flex-1">
         <ResponsiveContainer width="100%" height="100%">

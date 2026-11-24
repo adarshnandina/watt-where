@@ -13,9 +13,9 @@ interface Props {
 }
 
 /**
- * A draggable divider. Pointer *capture* keeps sending move events to this element even when the
- * mouse leaves it (or crosses the map iframe-like area), which is what makes dragging feel solid.
- * Arrow keys also work, so it is usable without a mouse.
+ * A draggable divider: a wide invisible hit area with a thin visible line that lights up on hover.
+ * Pointer *capture* keeps move events coming to this element even when the cursor crosses the map,
+ * which makes dragging feel solid. Arrow keys also work.
  */
 export function Splitter({ orientation, containerRef, onChange, current, label }: Props) {
   const axis = orientation === 'vertical' ? 'x' : 'y'
@@ -49,13 +49,14 @@ export function Splitter({ orientation, containerRef, onChange, current, label }
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onKeyDown={onKeyDown}
-      className={`group relative z-[1100] shrink-0 touch-none bg-slate-200 transition-colors hover:bg-sky-400 focus-visible:bg-sky-400 ${
-        vertical ? 'w-1.5 cursor-col-resize' : 'h-1.5 cursor-row-resize'
+      className={`group relative z-[1100] flex shrink-0 touch-none items-center justify-center outline-none ${
+        vertical ? 'w-3 cursor-col-resize' : 'h-3 cursor-row-resize'
       }`}
     >
-      {/* a larger invisible hit area makes the thin bar easy to grab */}
       <span
-        className={`absolute ${vertical ? '-inset-x-1.5 inset-y-0' : '-inset-y-1.5 inset-x-0'}`}
+        className={`rounded-full bg-stone-300 transition-all group-hover:bg-accent group-focus-visible:bg-accent group-active:bg-accent ${
+          vertical ? 'h-10 w-1 group-hover:h-16' : 'h-1 w-10 group-hover:w-16'
+        }`}
       />
     </div>
   )

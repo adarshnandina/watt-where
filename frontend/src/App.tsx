@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChartCard } from './components/ChartCard'
 import { ChatPanel } from './components/ChatPanel'
+import { ChevronIcon } from './components/icons'
 import { MapView } from './components/MapView'
 import { ResultTable } from './components/ResultTable'
 import { Splitter } from './components/Splitter'
@@ -49,9 +50,9 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-page">
       <main ref={mainRef} className="flex min-h-0 flex-1">
-        <div className="h-full min-w-[280px]" style={{ width: `${chatFrac * 100}%` }}>
+        <div className="h-full min-w-[300px]" style={{ width: `${chatFrac * 100}%` }}>
           <ChatPanel
             messages={chat.messages}
             isStreaming={chat.isStreaming}
@@ -73,9 +74,10 @@ export default function App() {
           label="Resize chat and map"
         />
 
-        <div ref={rightRef} className="flex min-w-0 flex-1 flex-col">
+        {/* Right side: floating rounded cards on the page background */}
+        <div ref={rightRef} className="flex min-w-0 flex-1 flex-col py-3 pr-3">
           <div
-            className="min-h-[120px]"
+            className="min-h-[120px] overflow-hidden rounded-2xl border border-line bg-card shadow-sm"
             style={showBody ? { height: `${mapFrac * 100}%` } : { flex: '1 1 0%' }}
           >
             <MapView
@@ -85,7 +87,7 @@ export default function App() {
           </div>
           {hasResults && (
             <>
-              {showBody && (
+              {showBody ? (
                 <Splitter
                   orientation="horizontal"
                   containerRef={rightRef}
@@ -93,22 +95,25 @@ export default function App() {
                   current={mapFrac}
                   label="Resize map and results"
                 />
+              ) : (
+                <div className="h-3 shrink-0" />
               )}
-              <div className={`flex min-h-0 flex-col bg-slate-50 ${showBody ? 'flex-1' : ''}`}>
+              <div className={`flex min-h-0 flex-col ${showBody ? 'flex-1' : ''}`}>
                 <button
                   type="button"
                   onClick={() => setResultsOpen((o) => !o)}
-                  className="flex w-full shrink-0 items-center justify-between border-t border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600"
+                  className="flex w-full shrink-0 items-center justify-between rounded-xl border border-line bg-card px-3 py-2 text-xs font-medium text-muted shadow-sm hover:text-ink"
                   aria-expanded={resultsOpen}
                 >
-                  Results (chart &amp; table)
-                  <span>{resultsOpen ? '▾ hide' : '▸ show'}</span>
+                  Results: chart &amp; table
+                  <ChevronIcon
+                    width={14}
+                    height={14}
+                    className={`transition-transform ${resultsOpen ? '' : '-rotate-90'}`}
+                  />
                 </button>
                 {showBody && (
-                  <div
-                    ref={resultsRef}
-                    className="flex min-h-0 flex-1 gap-0 overflow-hidden p-3 pt-1"
-                  >
+                  <div ref={resultsRef} className="mt-2 flex min-h-0 flex-1 overflow-hidden">
                     {chart && (
                       <div
                         className="min-w-0"
@@ -118,15 +123,13 @@ export default function App() {
                       </div>
                     )}
                     {chart && table && (
-                      <div className="mx-1.5 flex">
-                        <Splitter
-                          orientation="vertical"
-                          containerRef={resultsRef}
-                          onChange={setChartFrac}
-                          current={chartFrac}
-                          label="Resize chart and table"
-                        />
-                      </div>
+                      <Splitter
+                        orientation="vertical"
+                        containerRef={resultsRef}
+                        onChange={setChartFrac}
+                        current={chartFrac}
+                        label="Resize chart and table"
+                      />
                     )}
                     {table && (
                       <div className="min-w-0 flex-1">
@@ -140,7 +143,7 @@ export default function App() {
           )}
         </div>
       </main>
-      <footer className="border-t border-slate-200 bg-white px-4 py-1.5 text-[11px] text-slate-500">
+      <footer className="px-4 pb-2 text-[11px] text-muted">
         Datenquelle: Marktstammdatenregister (Bundesnetzagentur), dl-de/by-2-0 · © BKG 2025,
         dl-de/by-2-0 · Map © OpenStreetMap contributors
         {snapshot && <> · Data snapshot: {snapshot}</>}
