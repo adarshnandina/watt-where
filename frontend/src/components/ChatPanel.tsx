@@ -23,12 +23,23 @@ export function ChatPanel(p: Props) {
   }
   return (
     <section className="flex h-full min-h-0 flex-col bg-white">
-      <header className="border-b border-slate-200 px-4 py-3">
-        <h1 className="text-lg font-semibold">⚡ WattWhere</h1>
-        <p className="text-xs text-slate-500">
-          Ask questions about the energy transition in Baden-Württemberg, answered from official
-          data.
-        </p>
+      <header className="flex items-start justify-between gap-2 border-b border-slate-200 px-4 py-3">
+        <div className="min-w-0">
+          <h1 className="text-lg font-semibold">⚡ WattWhere</h1>
+          <p className="text-xs text-slate-500">
+            Ask questions about the energy transition in Baden-Württemberg, answered from official
+            data.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={p.onNewChat}
+          disabled={p.messages.length === 0 && p.draft === ''}
+          title="Clear this conversation and start a new one"
+          className="shrink-0 whitespace-nowrap rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          ＋ New chat
+        </button>
       </header>
 
       {p.messages.length === 0 ? (
