@@ -2027,6 +2027,7 @@ dependencies = [
     { name = "anthropic" },
     { name = "django" },
     { name = "geopandas" },
+    { name = "jsonschema" },
     { name = "mcp" },
     { name = "open-mastr" },
     { name = "psycopg", extra = ["binary"] },
@@ -2038,6 +2039,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "httpx2" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-django" },
@@ -2049,6 +2051,7 @@ requires-dist = [
     { name = "anthropic", specifier = ">=2.12.0" },
     { name = "django", specifier = ">=5.2,<5.3" },
     { name = "geopandas", specifier = ">=1.2.0" },
+    { name = "jsonschema", specifier = ">=4.26.0" },
     { name = "mcp", specifier = ">=2.3.0" },
     { name = "open-mastr", specifier = ">=1.1.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3" },
@@ -2060,6 +2063,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "httpx2", specifier = ">=2.16.2" },
     { name = "pytest", specifier = ">=9.2.0" },
     { name = "pytest-asyncio", specifier = ">=1.5.0" },
     { name = "pytest-django", specifier = ">=4.14.0" },

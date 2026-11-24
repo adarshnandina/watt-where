@@ -42,7 +42,6 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
-    "django.contrib.staticfiles",
     "energy",
     "agent",
 ]
@@ -60,7 +59,6 @@ DATABASES = {"default": db_config_from_url(DATABASE_URL)}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 USE_TZ = True
 TIME_ZONE = "UTC"
-STATIC_URL = "static/"
 
 # Region (Bundesland) the app covers
 REGION_LAND_PREFIX = os.environ.get("REGION_LAND_PREFIX", "08")

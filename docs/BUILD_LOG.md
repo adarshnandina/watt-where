@@ -152,6 +152,7 @@ README (pitch, Mermaid diagram, quickstart, design decisions, eval results, limi
 - Leaflet only measures its container once, so a `ResizeObserver` inside the map calls `invalidateSize()` whenever the panel changes size. Without that the map would show grey tiles after dragging.
 - Chart and table now fill their panel instead of using fixed heights.
 - Verified: typecheck, lint, 27 unit tests (layout maths + reducer), production build. **Not verified visually** (no browser available here): please drag the three dividers and click New chat once.
+- **Correction:** the New chat *button* described above was in fact missing from that commit. The edit to the chat header silently did not apply (prettier had reformatted the block, so my string replacement matched nothing) and I committed without checking. The reducer tests passed because they never rendered the header. Found by the user; fixed in the next commit, and render tests (`ChatPanel.test.tsx`) were added so this class of mistake is caught. Lesson: assert that scripted edits applied, and test what the user sees, not just the state logic.
 
 ## UI redesign: modern chat-app look
 Restyled to feel like current AI chat apps; behaviour, state and props are unchanged.
@@ -171,3 +172,9 @@ Restyled to feel like current AI chat apps; behaviour, state and props are uncha
 - **Chart:** Recharts draws SVG with concrete colours, so grid, axes, legend and tooltip take theme-dependent values from the theme context.
 - **Code layout:** `lib/theme.ts` (pure logic, context, hook), `lib/ThemeProvider.tsx` (the component), split so Fast Refresh and the linter stay happy.
 - **Tests:** `resolveInitialTheme` (saved choice beats OS preference, junk ignored) and a render test for the toggle. Not visually verified (no browser here).
+
+## Pre-publication cleanup
+- Removed from the repository: the original build brief (it named the company the project was written for; it stays on disk, git-ignored), the Vite template's `frontend/README.md`, an empty `docs/screenshots/` placeholder, the unused `django.contrib.staticfiles` app, a leftover no-op line in a test.
+- Dependencies: removed unused `@testing-library/react` and `jsdom` (tests render with `react-dom/server`); declared `jsonschema` (used by the tool registry) and `httpx2` (dev, used by test fakes), which had only been installed transitively.
+- READMEs rewritten: root (features, structure, theming, testing), `frontend/`, new `backend/`.
+- Checked: no API keys or personal data in tracked files; `.env` and `data/` are untracked.

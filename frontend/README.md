@@ -1,32 +1,41 @@
-# React + TypeScript + Vite
+# WattWhere frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React 19 + TypeScript (strict) + Vite + Tailwind CSS v4. Talks only to the backend's `/api` (Vite proxies it to `http://localhost:8000`), so there are no secrets or backend URLs in this code.
 
-Currently, two official plugins are available:
+## Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev        # http://localhost:5173 (backend must be running on :8000)
+npm test           # vitest (offline)
+npm run lint       # oxlint + prettier --check
+npm run build      # type-check + production build into dist/
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+From the repository root, `make dev-frontend`, `make test` and `make lint` do the same.
+
+## Structure
+
+```
+src/
+  api/        sse.ts (POST-based SSE parser + type guards at the JSON boundary), types.ts (mirrors backend/agent/events.py)
+  hooks/      useChat.ts: reducer + hook that holds all chat state and runs the stream
+  components/ ChatPanel, MessageList, Message, ToolCallChip, Composer, ExampleQuestions,
+              MapView (Leaflet), ChartCard (Recharts), ResultTable, Splitter, icons
+  lib/        layout.ts (panel-size maths + persistence), theme.ts / ThemeProvider.tsx, colors.ts,
+              latestDisplays.ts (what the map/chart/table show), quantiles.ts (choropleth classes)
+  App.tsx     layout: resizable chat | map | results
+```
+
+## How a message flows
+
+`Composer` → `useChat.send` → `streamChat` (`fetch` + stream reader) → parsed events → `chatReducer` → components re-render.
+Tool results arrive as `display` events with typed payloads (`map_choropleth`, `map_points`, `map_highlight`, `chart_line`, `table`); `latestDisplays()` decides which ones the right-hand side shows.
+
+## Conventions
+
+- **State changes go through the reducer** (pure, unit-tested); components only render.
+- **No `any`.** Untyped JSON is validated once, in `api/sse.ts`.
+- **Colours are CSS variables** defined in `index.css`; dark mode overrides the same names under `html.dark`. Colours needed in JavaScript (map, chart) come from `useTheme()`.
+- **Panel sizes** are stored as fractions in `localStorage` (`ww.*` keys); the theme in `ww.theme`.
+- Tests use `react-dom/server` to render components to HTML (no DOM library needed).

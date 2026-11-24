@@ -6,7 +6,7 @@ from django.test import AsyncClient
 from agent import views
 from agent.prompts import build_system_prompt
 
-from .fakes import FakeClient, FakeTools, round_
+from .fakes import FakeClient, round_
 
 POST = {"content_type": "application/json"}
 
@@ -80,6 +80,3 @@ async def test_examples_endpoint():
 def test_system_prompt_mentions_scope_and_snapshot():
     p = build_system_prompt()
     assert "Baden-Württemberg" in p and "ALWAYS get numbers from tools" in p and "coordinates" in p.lower()
-
-
-_ = FakeTools

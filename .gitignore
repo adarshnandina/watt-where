@@ -11,3 +11,4 @@ dist/
 .ruff_cache/
 *.pyc
 .claude/
+WATTWHERE_BUILD_SPEC.md
