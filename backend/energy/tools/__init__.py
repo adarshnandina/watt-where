@@ -44,8 +44,9 @@ def _tool(name: str, fn: Callable[..., ToolResult], description: str, properties
 _TOOLS = [
     _tool(
         "find_municipality", find_municipality,
-        "Look up a municipality (Gemeinde/Stadt) by name, tolerant of typos and umlauts. Returns the 8-digit key (ags), "
-        "district key and name, population and centre. ALWAYS call this first to turn a place name into a key.",
+        "Look up a municipality (Gemeinde/Stadt) OR a district (Landkreis) by name, tolerant of typos and umlauts. Returns "
+        "municipality matches (8-digit key `ags`, district key, population, centre) and district matches (5-digit `district_ags`). "
+        "ALWAYS call this first to turn a place name into a key; never guess a key.",
         {"query": {"type": "string", "description": "Place name, e.g. 'Freiburg' or 'Tuebingen'"},
          "limit": {"type": "integer", "minimum": 1, "maximum": 20, "default": 5}},
         ["query"],

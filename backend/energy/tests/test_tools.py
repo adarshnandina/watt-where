@@ -40,6 +40,14 @@ def test_find_not_found_and_empty():
     assert not r.ok
 
 
+def test_find_district_by_name():
+    r, _ = call_tool("find_municipality", {"query": "Breisgau Hochschwarzwald"})
+    assert r.ok and r.llm_content["districts"][0]["district_ags"] == "08315"
+    assert r.llm_content["districts"][0]["municipalities"] == 3
+    r, _ = call_tool("find_municipality", {"query": "emmendingen"})  # both a district and a municipality
+    assert r.llm_content["matches"][0]["ags"] == "08316001" and r.llm_content["districts"][0]["district_ags"] == "08316"
+
+
 # ---- capacity_summary
 def test_capacity_summary_municipality_and_units():
     n, kw = expected(FREIBURG, "solar")

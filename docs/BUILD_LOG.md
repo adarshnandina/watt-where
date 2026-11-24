@@ -135,3 +135,13 @@ Baseline 22/25 -> 24/25 after fixing two eval mistakes (same prompt) -> **25/25*
 
 **Bug found only by the live run:** `thinking` content blocks crashed the loop (it only knew `text` and `tool_use`). Now passed back unchanged, as the API requires; regression test added. A reminder of why fake-client tests alone are not enough.
 **Ops note:** the Docker container stopped when Docker restarted; `make db-up` brings it back with data intact (named volume).
+
+## Phase 5 update: end-to-end through the real stack (no browser available)
+No browser tooling was available in this environment, so I could not take screenshots or watch the UI render. Instead I sent all 5 spec example questions through the Vite proxy (`:5173/api/chat`) to Django and Claude, and checked events, tools and display payloads: all five completed with `end_turn`, no errors; payloads were a 1,103-feature choropleth, 23 map points, line charts, tables, and highlight polygons; figures matched the ground truth (e.g. 103.8 MW, 23 turbines / 57.6 MW).
+
+**Found by doing this:** question 5 revealed that the model guessed a district key (`08316` is Emmendingen, not Breisgau-Hochschwarzwald) and its self-correction leaked into the answer. Root cause was a tool gap: `find_municipality` could not look up districts. Fixed: it now also returns matching districts; prompt/tool text say "never guess a key"; test added. Eval re-run (`final`): 25/25. The eval had not caught this, a reminder that 25 questions are a floor, not proof.
+
+**Still unverified by a human eye:** visual layout, map colours/legend, the Stop button behaviour in a real browser, and the screenshots (`docs/screenshots/` is empty).
+
+## Phase 8: Docs and polish
+README (pitch, Mermaid diagram, quickstart, design decisions, eval results, limitations, attributions; no employer mentioned), `docs/ARCHITECTURE.md`. The spec's "from a clean state" check was **not** run destructively because `make seed-sample` would truncate the real data in the dev DB; instead each `pytest` run builds a fresh test database from migrations and seeds it, which exercises the same path.

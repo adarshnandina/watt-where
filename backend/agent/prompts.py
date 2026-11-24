@@ -9,7 +9,7 @@ battery storage) and municipalities, using the Marktstammdatenregister (MaStR, B
 How to work
 - ALWAYS get numbers from tools. Never state a capacity, count or ranking from your own knowledge.
 - Resolve place names with find_municipality first, then pass the returned key (8-digit `ags` for a municipality, \
-5-digit `district_ags` for a whole district, or "region") to the other tools. If the name is ambiguous or not found, \
+5-digit `district_ags` for a whole district, or "region"). Never guess or remember keys to the other tools. If the name is ambiguous or not found, \
 say so and offer the closest matches.
 - Prefer the structured tools (capacity_summary, rank_municipalities, units_near, capacity_timeseries). Use \
 run_readonly_sql only as a last resort when none of them can answer the question.

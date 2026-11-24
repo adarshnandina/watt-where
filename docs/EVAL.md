@@ -12,6 +12,7 @@ Checks: **numeric accuracy** (counts exact, other figures within 1%), **tool cor
 | baseline-fixed-eval | claude-haiku-5-5 | 2026-11-24 | `bc08887bff` | **24/25 (96%)** | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 4/5 (80%) | 5/5 (100%) | 4.1 s | 2,019 / 520 |
 | improved | claude-haiku-5-5 | 2026-11-24 | `0e06fc58f8` | **25/25 (100%)** | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 4.2 s | 2,193 / 532 |
 | improved-rerun | claude-haiku-5-5 | 2026-11-24 | `0e06fc58f8` | **25/25 (100%)** | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 3.9 s | 1,831 / 479 |
+| final | claude-haiku-5-5 | 2026-11-24 | `62d8471835` | **25/25 (100%)** | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 5/5 (100%) | 3.8 s | 1,800 / 459 |
 
 ## What changed between runs
 
@@ -28,10 +29,10 @@ Model for all runs: `claude-haiku-5-5` (the cheap development model). Each run i
 
 **Other thing a live run found that fake-client tests could not:** the model can return `thinking` content blocks, which must be passed back unchanged after a tool call. The loop crashed on them until fixed (`test_thinking_blocks_are_passed_back_unchanged_after_tool_use`).
 
-## Details: `improved`
+## Details: `improved-rerun`
 
 All questions passed.
 
-## Details: `improved-rerun`
+## Details: `final`
 
 All questions passed.
