@@ -19,9 +19,9 @@ export function ChartCard({ chart }: { chart: ChartData }) {
     return row
   })
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3">
+    <div className="flex h-full min-h-[200px] flex-col rounded-lg border border-slate-200 bg-white p-3">
       <h3 className="mb-2 text-sm font-semibold">{chart.title}</h3>
-      <div className="h-56">
+      <div className="min-h-0 flex-1">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={rows} margin={{ top: 4, right: 12, bottom: 0, left: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />

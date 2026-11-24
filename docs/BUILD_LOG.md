@@ -145,3 +145,10 @@ No browser tooling was available in this environment, so I could not take screen
 
 ## Phase 8: Docs and polish
 README (pitch, Mermaid diagram, quickstart, design decisions, eval results, limitations, attributions; no employer mentioned), `docs/ARCHITECTURE.md`. The spec's "from a clean state" check was **not** run destructively because `make seed-sample` would truncate the real data in the dev DB; instead each `pytest` run builds a fresh test database from migrations and seeds it, which exercises the same path.
+
+## UI update: New chat button and resizable panels
+- **New chat** (header button, shown once a conversation exists): aborts any running request first, then a `reset` action returns the reducer to its initial state, and the composer draft is cleared. Aborting first matters: otherwise a late stream event could land in the new conversation. Reducer tests cover reset mid-stream and a late `finish` after reset.
+- **Resizable panels:** a reusable `Splitter` (pointer capture, so dragging keeps working when the cursor crosses the map; arrow keys work too, `role="separator"`) between chat | map, map | results, and chart | table. Sizes are stored as fractions of their container (clamped, persisted in `localStorage` via `usePersistentFraction`), so they survive reloads and window resizes.
+- Leaflet only measures its container once, so a `ResizeObserver` inside the map calls `invalidateSize()` whenever the panel changes size. Without that the map would show grey tiles after dragging.
+- Chart and table now fill their panel instead of using fixed heights.
+- Verified: typecheck, lint, 27 unit tests (layout maths + reducer), production build. **Not verified visually** (no browser available here): please drag the three dividers and click New chat once.

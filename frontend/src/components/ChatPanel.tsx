@@ -13,6 +13,7 @@ interface Props {
   onStop: () => void
   onRetry: () => void
   onDismissError: () => void
+  onNewChat: () => void
 }
 
 export function ChatPanel(p: Props) {

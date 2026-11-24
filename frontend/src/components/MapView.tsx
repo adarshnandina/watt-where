@@ -18,6 +18,18 @@ import { classOf, quantileBreaks } from '../lib/quantiles'
 const FREIBURG: [number, number] = [47.995, 7.85]
 const fmt = (v: number) => v.toLocaleString('en-US', { maximumFractionDigits: 3 })
 
+/** Leaflet measures its container once; tell it whenever the container is resized (panel dragging). */
+function ResizeSync() {
+  const map = useMap()
+  useEffect(() => {
+    const el = map.getContainer()
+    const observer = new ResizeObserver(() => map.invalidateSize())
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [map])
+  return null
+}
+
 /** Zoom to whatever was just drawn. useMap() gives access to the Leaflet map instance. */
 function FitBounds({ bounds }: { bounds: L.LatLngBounds | null }) {
   const map = useMap()
@@ -198,6 +210,7 @@ export function MapView({
             )
           return <PointsLayer key={i} payload={p} />
         })}
+        <ResizeSync />
         <FitBounds bounds={bounds} />
       </MapContainer>
       {choropleth?.kind === 'map_choropleth' && <ChoroplethLegend payload={choropleth} />}

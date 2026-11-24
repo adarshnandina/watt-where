@@ -116,6 +116,17 @@ describe('chatReducer', () => {
     expect(s.messages).toEqual([])
   })
 
+  it('reset returns to the empty initial state, even mid-stream', () => {
+    const s = run([send(), ev({ type: 'text_delta', text: 'partial' }), { type: 'reset' }])
+    expect(s).toEqual(initialState)
+  })
+
+  it('a late finish after reset does not resurrect anything', () => {
+    const s = run([send(), { type: 'reset' }, { type: 'finish' }])
+    expect(s.messages).toEqual([])
+    expect(s.isStreaming).toBe(false)
+  })
+
   it('toHistory sends only non-empty visible text', () => {
     const s = run([
       send('Q1'),

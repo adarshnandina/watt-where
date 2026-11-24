@@ -28,9 +28,9 @@ export function ResultTable({ table }: { table: TableData }) {
   }, [table.rows, sort])
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3">
+    <div className="flex h-full min-h-[200px] flex-col rounded-lg border border-slate-200 bg-white p-3">
       <h3 className="mb-2 text-sm font-semibold">{table.title}</h3>
-      <div className="max-h-64 overflow-auto">
+      <div className="min-h-0 flex-1 overflow-auto">
         <table className="w-full text-left text-xs">
           <thead className="sticky top-0 bg-slate-50">
             <tr>

@@ -57,6 +57,7 @@ export type ChatAction =
   | { type: 'finish' } // stream ended (normally, or because the user pressed Stop)
   | { type: 'fail'; message: string } // network/HTTP failure (not an `error` event from the server)
   | { type: 'dismiss_error' }
+  | { type: 'reset' } // New chat: forget everything
   | { type: 'drop_last_turn' } // removes the last user message + its assistant reply (used by retry)
 
 function updateLastAssistant(
@@ -176,6 +177,9 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         messages: updateLastAssistant(state.messages, (m) => ({ ...m, streaming: false })),
       }
 
+    case 'reset':
+      return initialState
+
     case 'dismiss_error':
       return { ...state, error: null }
 
@@ -253,6 +257,13 @@ export function useChat() {
     void run([...toHistory(earlier), { role: 'user', content: question }])
   }, [run, state.isStreaming, state.messages])
 
+  // New chat: cancel any running request first (so a late event can't land in the new conversation),
+  // then wipe the state.
+  const clear = useCallback(() => {
+    abortRef.current?.abort()
+    dispatch({ type: 'reset' })
+  }, [])
+
   const dismissError = useCallback(() => dispatch({ type: 'dismiss_error' }), [])
 
   return {
@@ -262,6 +273,7 @@ export function useChat() {
     send,
     stop,
     retry,
+    clear,
     dismissError,
   }
 }
