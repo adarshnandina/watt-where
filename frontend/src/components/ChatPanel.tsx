@@ -1,7 +1,8 @@
 import type { ChatError, ChatMessage } from '../hooks/useChat'
 import { Composer } from './Composer'
 import { ExampleQuestions } from './ExampleQuestions'
-import { BoltIcon, PlusIcon } from './icons'
+import { useTheme } from '../lib/theme'
+import { BoltIcon, MoonIcon, PlusIcon, SunIcon } from './icons'
 import { MessageList } from './MessageList'
 
 interface Props {
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export function ChatPanel(p: Props) {
+  const { theme, toggle } = useTheme()
   const send = () => {
     p.onSend(p.draft)
     p.onDraftChange('')
@@ -31,16 +33,27 @@ export function ChatPanel(p: Props) {
           </div>
           <h1 className="text-[17px] font-semibold tracking-tight">WattWhere</h1>
         </div>
-        <button
-          type="button"
-          onClick={p.onNewChat}
-          disabled={p.messages.length === 0 && p.draft === ''}
-          title="Clear this conversation and start a new one"
-          className="flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-line bg-card px-3 py-1.5 text-sm font-medium shadow-sm hover:bg-bubble disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"
-        >
-          <PlusIcon width={15} height={15} />
-          New chat
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-line bg-card text-muted shadow-sm hover:text-ink"
+          >
+            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+          </button>
+          <button
+            type="button"
+            onClick={p.onNewChat}
+            disabled={p.messages.length === 0 && p.draft === ''}
+            title="Clear this conversation and start a new one"
+            className="flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-line bg-card px-3 py-1.5 text-sm font-medium shadow-sm hover:bg-bubble disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"
+          >
+            <PlusIcon width={15} height={15} />
+            New chat
+          </button>
+        </div>
       </header>
 
       {p.messages.length === 0 ? (
@@ -53,7 +66,7 @@ export function ChatPanel(p: Props) {
         <div className="px-4">
           <div
             role="alert"
-            className="mx-auto mb-2 flex max-w-3xl items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
+            className="mx-auto mb-2 flex max-w-3xl items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200"
           >
             <span className="flex-1">{p.error.message}</span>
             {p.error.retryable && (

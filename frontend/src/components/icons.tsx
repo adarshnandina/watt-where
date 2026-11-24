@@ -49,6 +49,11 @@ export const BoltIcon = (p: SVGProps<SVGSVGElement>) => (
     <path d="M13 2 4 14h6l-1 8 9-12h-6z" />
   </svg>
 )
+export const MoonIcon = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base} {...p}>
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+  </svg>
+)
 export const SunIcon = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base} {...p}>
     <circle cx="12" cy="12" r="4" />

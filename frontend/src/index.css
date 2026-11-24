@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* `dark:` utilities apply when <html> has the class "dark" (instead of following the OS directly). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Design tokens: a warm neutral palette with one accent colour. */
 @theme {
   --color-page: #faf9f5;
@@ -10,6 +13,19 @@
   --color-accent: #c96442;
   --color-accent-soft: #f6e9e3;
   --color-bubble: #f0eee6;
+}
+
+/* Dark theme: same variable names, different values. Everything built from the tokens switches automatically. */
+html.dark {
+  --color-page: #262624;
+  --color-card: #30302e;
+  --color-line: #44443f;
+  --color-ink: #f2f0e8;
+  --color-muted: #a8a59c;
+  --color-accent: #d97757;
+  --color-accent-soft: #4a3228;
+  --color-bubble: #3b3b38;
+  color-scheme: dark;
 }
 
 html,
@@ -39,7 +55,7 @@ body {
 /* Slim scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #d6d3cb transparent;
+  scrollbar-color: color-mix(in srgb, var(--color-muted) 45%, transparent) transparent;
 }
 
 /* Blinking cursor at the end of a streaming answer */
@@ -137,4 +153,36 @@ body {
   padding: 0.1rem 0.3rem;
   border-radius: 0.3rem;
   font-size: 0.875em;
+}
+
+/* ---- Map in dark mode: darken the (light) OpenStreetMap tiles and restyle Leaflet's own widgets ---- */
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+}
+.dark .leaflet-container {
+  background: #1d1d1b;
+}
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip,
+.dark .leaflet-tooltip {
+  background: var(--color-card);
+  color: var(--color-ink);
+  border-color: var(--color-line);
+}
+.dark .leaflet-tooltip-top:before,
+.dark .leaflet-tooltip-bottom:before {
+  border-top-color: var(--color-card);
+  border-bottom-color: var(--color-card);
+}
+.dark .leaflet-bar a {
+  background: var(--color-card);
+  color: var(--color-ink);
+  border-color: var(--color-line);
+}
+.dark .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--color-card) 80%, transparent);
+  color: var(--color-muted);
+}
+.dark .leaflet-control-attribution a {
+  color: var(--color-accent);
 }

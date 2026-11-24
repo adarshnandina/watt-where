@@ -42,7 +42,7 @@ export function ExampleQuestions({ onPick }: { onPick: (q: string) => void }) {
                 key={q}
                 type="button"
                 onClick={() => onPick(q)}
-                className="group flex items-start gap-3 rounded-2xl border border-line bg-card p-3.5 text-left text-sm leading-snug shadow-sm transition hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md"
+                className="group flex items-start gap-3 rounded-2xl border border-line bg-card p-3.5 text-left text-sm leading-snug shadow-sm transition hover:-translate-y-0.5 hover:border-muted/60 hover:shadow-md"
               >
                 <Icon className="mt-0.5 shrink-0 text-accent" />
                 <span>{q}</span>

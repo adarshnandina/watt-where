@@ -32,7 +32,7 @@ export function ResultTable({ table }: { table: TableData }) {
       <h3 className="mb-2 text-sm font-semibold">{table.title}</h3>
       <div className="min-h-0 flex-1 overflow-auto">
         <table className="w-full text-left text-xs">
-          <thead className="sticky top-0 bg-stone-50">
+          <thead className="sticky top-0 bg-page">
             <tr>
               {table.columns.map((c, i) => (
                 <th
@@ -52,7 +52,7 @@ export function ResultTable({ table }: { table: TableData }) {
           </thead>
           <tbody>
             {rows.map((r, i) => (
-              <tr key={i} className="border-t border-stone-100">
+              <tr key={i} className="border-t border-line/60">
                 {r.map((v, j) => (
                   <td
                     key={j}

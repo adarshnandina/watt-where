@@ -34,10 +34,10 @@ export function Composer({ value, onChange, onSend, onStop, isStreaming }: Props
   return (
     <div className="px-4 pb-3 pt-2">
       <div className="mx-auto max-w-3xl">
-        <div className="flex items-end gap-2 rounded-3xl border border-line bg-card py-2 pl-5 pr-2 shadow-sm transition-shadow focus-within:border-stone-300 focus-within:shadow-md">
+        <div className="flex items-end gap-2 rounded-3xl border border-line bg-card py-2 pl-5 pr-2 shadow-sm transition-shadow focus-within:border-muted/60 focus-within:shadow-md">
           <textarea
             ref={ref}
-            className="max-h-[200px] min-h-[28px] flex-1 resize-none self-center bg-transparent py-1 text-[15px] leading-6 outline-none placeholder:text-stone-400 disabled:opacity-60"
+            className="max-h-[200px] min-h-[28px] flex-1 resize-none self-center bg-transparent py-1 text-[15px] leading-6 outline-none placeholder:text-muted disabled:opacity-60"
             rows={1}
             placeholder="Ask about solar, wind, storage in Baden-Württemberg…"
             value={value}
@@ -52,7 +52,7 @@ export function Composer({ value, onChange, onSend, onStop, isStreaming }: Props
               onClick={onStop}
               aria-label="Stop"
               title="Stop generating"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-white hover:bg-stone-700"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-page hover:opacity-80"
             >
               <StopIcon width={14} height={14} />
             </button>
@@ -63,7 +63,7 @@ export function Composer({ value, onChange, onSend, onStop, isStreaming }: Props
               disabled={!canSend}
               aria-label="Send"
               title="Send (Enter)"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-white transition-opacity hover:opacity-90 disabled:bg-stone-200 disabled:text-stone-400"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-white transition-opacity hover:opacity-90 disabled:bg-line disabled:text-muted"
             >
               <ArrowUpIcon width={18} height={18} />
             </button>

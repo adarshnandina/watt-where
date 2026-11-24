@@ -48,6 +48,11 @@ describe('ChatPanel', () => {
     expect(newChatTag(html)).not.toContain('disabled=""')
   })
 
+  it('has a theme toggle (light by default) and the New chat button next to it', () => {
+    const html = renderToString(<ChatPanel {...props} />)
+    expect(html).toContain('aria-label="Switch to dark mode"')
+  })
+
   it('shows Stop instead of Send while streaming, plus a tool chip and a thinking indicator', () => {
     const streaming = msg({
       streaming: true,

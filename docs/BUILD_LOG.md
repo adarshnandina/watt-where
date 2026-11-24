@@ -163,3 +163,11 @@ Restyled to feel like current AI chat apps; behaviour, state and props are uncha
 - Icons are small inline SVGs (`components/icons.tsx`), no icon library.
 - **Tests:** new `ChatPanel.test.tsx` renders the real component to HTML and checks the New chat button (present always, disabled only when there is nothing to clear), Stop vs Send, tool row, thinking indicator and error banner. Added after the earlier bug where reducer tests were green but the button was missing.
 - Not visually verified by me (no browser here).
+
+## Dark mode
+- **Token-driven:** every colour is a CSS variable. `html.dark` overrides the same variable names, so all components switch without per-component rules. The few Tailwind palette colours (error reds) use `dark:` variants via `@custom-variant dark` (class-based, not OS-based).
+- **Toggle** (moon/sun) in the chat header. The choice is saved in localStorage; with no saved choice the OS preference is used. A tiny inline script in `index.html` applies the class before React loads, so there is no white flash.
+- **Map:** the light OpenStreetMap tiles are darkened with a CSS filter in dark mode (no second tile provider or API key needed); Leaflet popups, tooltips, zoom buttons and attribution are restyled; the choropleth uses a dark-to-light ramp (bright = high); outlines and point strokes adapt. The GeoJSON layer is keyed by theme so it re-styles immediately.
+- **Chart:** Recharts draws SVG with concrete colours, so grid, axes, legend and tooltip take theme-dependent values from the theme context.
+- **Code layout:** `lib/theme.ts` (pure logic, context, hook), `lib/ThemeProvider.tsx` (the component), split so Fast Refresh and the linter stay happy.
+- **Tests:** `resolveInitialTheme` (saved choice beats OS preference, junk ignored) and a render test for the toggle. Not visually verified (no browser here).

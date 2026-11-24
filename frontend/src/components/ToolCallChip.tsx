@@ -27,7 +27,9 @@ export function ToolCallChip({ call }: { call: ToolCall }) {
   return (
     <div
       className={`fade-in rounded-xl border text-xs ${
-        failed ? 'border-red-200 bg-red-50 text-red-700' : 'border-line bg-card text-muted'
+        failed
+          ? 'border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-300'
+          : 'border-line bg-card text-muted'
       }`}
     >
       <button

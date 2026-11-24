@@ -54,7 +54,7 @@ export function Splitter({ orientation, containerRef, onChange, current, label }
       }`}
     >
       <span
-        className={`rounded-full bg-stone-300 transition-all group-hover:bg-accent group-focus-visible:bg-accent group-active:bg-accent ${
+        className={`rounded-full bg-muted/40 transition-all group-hover:bg-accent group-focus-visible:bg-accent group-active:bg-accent ${
           vertical ? 'h-10 w-1 group-hover:h-16' : 'h-1 w-10 group-hover:w-16'
         }`}
       />

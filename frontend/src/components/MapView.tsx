@@ -12,7 +12,8 @@ import {
 } from 'react-leaflet'
 import type { Feature, FeatureCollection, Point } from 'geojson'
 import type { MapPayload } from '../api/types'
-import { RAMP, TECH_COLORS, techColor } from '../lib/colors'
+import { TECH_COLORS, rampFor, techColor } from '../lib/colors'
+import { useTheme } from '../lib/theme'
 import { classOf, quantileBreaks } from '../lib/quantiles'
 
 const FREIBURG: [number, number] = [47.995, 7.85]
@@ -61,6 +62,9 @@ function Choropleth({
   payload: Extract<MapPayload, { kind: 'map_choropleth' }>
   onPick: (name: string) => void
 }) {
+  const { theme } = useTheme()
+  const ramp = rampFor(theme)
+  const dark = theme === 'dark'
   const breaks = useMemo(
     () =>
       quantileBreaks(
@@ -72,15 +76,16 @@ function Choropleth({
   )
   return (
     <GeoJSON
-      key={payload.title + payload.geojson.features.length}
+      key={`${payload.title}-${payload.geojson.features.length}-${theme}`} // re-create the layer when the theme changes
       data={payload.geojson as FeatureCollection}
       style={(f) => {
         const v = f?.properties?.value
         return {
           weight: 0.6,
-          color: '#64748b',
+          color: dark ? '#1d1d1b' : '#64748b',
           fillOpacity: 0.8,
-          fillColor: typeof v === 'number' ? RAMP[classOf(v, breaks)] : '#e5e7eb',
+          fillColor:
+            typeof v === 'number' ? ramp[classOf(v, breaks)] : dark ? '#3b3b38' : '#e5e7eb',
         }
       }}
       onEachFeature={(f, layer) => {
@@ -100,6 +105,7 @@ function ChoroplethLegend({
 }: {
   payload: Extract<MapPayload, { kind: 'map_choropleth' }>
 }) {
+  const { theme } = useTheme()
   const vals = payload.geojson.features
     .map((f) => f.properties?.value)
     .filter((v): v is number => typeof v === 'number')
@@ -107,13 +113,13 @@ function ChoroplethLegend({
   const lo = [Math.min(...vals), ...breaks]
   const hi = [...breaks, Math.max(...vals)]
   return (
-    <div className="absolute bottom-6 left-3 z-[1000] rounded-md bg-white/95 p-2 text-xs shadow">
+    <div className="absolute bottom-6 left-3 z-[1000] rounded-md bg-card/95 text-ink p-2 text-xs shadow">
       <div className="mb-1 font-semibold">{payload.unit}</div>
       {lo.map((l, i) => (
         <div key={i} className="flex items-center gap-1.5">
           <span
-            className="inline-block h-3 w-4 border border-stone-300"
-            style={{ background: RAMP[i] }}
+            className="inline-block h-3 w-4 border border-line"
+            style={{ background: rampFor(theme)[i] }}
           />
           {fmt(l)} – {fmt(hi[i])}
         </div>
@@ -123,13 +129,19 @@ function ChoroplethLegend({
 }
 
 function PointsLayer({ payload }: { payload: Extract<MapPayload, { kind: 'map_points' }> }) {
+  const { theme } = useTheme()
   return (
     <>
       {payload.circle && (
         <Circle
           center={[payload.circle.lat, payload.circle.lon]}
           radius={payload.circle.radius_km * 1000}
-          pathOptions={{ color: '#0f172a', weight: 1.5, dashArray: '6 4', fillOpacity: 0.03 }}
+          pathOptions={{
+            color: theme === 'dark' ? '#f2f0e8' : '#0f172a',
+            weight: 1.5,
+            dashArray: '6 4',
+            fillOpacity: 0.03,
+          }}
         />
       )}
       {payload.geojson.features.map((f: Feature, i) => {
@@ -142,7 +154,12 @@ function PointsLayer({ payload }: { payload: Extract<MapPayload, { kind: 'map_po
             key={i}
             center={[lat, lon]}
             radius={Math.min(14, 3 + Math.sqrt(kw) / 5)} // area-ish scaling, capped
-            pathOptions={{ color: '#1e293b', weight: 0.8, fillColor: color, fillOpacity: 0.85 }}
+            pathOptions={{
+              color: theme === 'dark' ? '#1d1d1b' : '#1e293b',
+              weight: 0.8,
+              fillColor: color,
+              fillOpacity: 0.85,
+            }}
           >
             <Popup>
               <b>{String(p.technology)}</b>
@@ -162,7 +179,7 @@ function PointsLayer({ payload }: { payload: Extract<MapPayload, { kind: 'map_po
 function PointsLegend({ payload }: { payload: Extract<MapPayload, { kind: 'map_points' }> }) {
   const techs = [...new Set(payload.geojson.features.map((f) => String(f.properties?.technology)))]
   return (
-    <div className="absolute bottom-6 left-3 z-[1000] rounded-md bg-white/95 p-2 text-xs shadow">
+    <div className="absolute bottom-6 left-3 z-[1000] rounded-md bg-card/95 text-ink p-2 text-xs shadow">
       <div className="mb-1 font-semibold">{payload.title}</div>
       {techs.map((t) => (
         <div key={t} className="flex items-center gap-1.5">
@@ -173,9 +190,7 @@ function PointsLegend({ payload }: { payload: Extract<MapPayload, { kind: 'map_p
           {t}
         </div>
       ))}
-      <div className="mt-1 text-stone-500">
-        Size ~ capacity. Only units with public coordinates.
-      </div>
+      <div className="mt-1 text-muted">Size ~ capacity. Only units with public coordinates.</div>
     </div>
   )
 }
